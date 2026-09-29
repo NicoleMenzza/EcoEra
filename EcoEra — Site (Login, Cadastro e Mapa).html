@@ -1,0 +1,2552 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoEra — Sustentabilidade . Troca . Mapa</title>
+  <link rel="icon" type="image/png" href="https://generated-images.adapta.one/dias21biel%40gmail.com/01a0d9a1-b790-73be-87f5-86105a97498b/2026-09-25T17-57-58-944Z_Original_user_intent_Tool_generated_image_directi.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basecoat-css@1.0.2/dist/basecoat.cdn.min.css">
+  <style>
+/* Skip artifact shell — fixed styles served beside every artifact.
+   Complements basecoat; artifacts override --accent for their own identity. */
+:root {
+  color-scheme: light dark;
+  --accent: #2563eb;
+  --accent-contrast: #ffffff;
+  --accent-text: color-mix(in srgb, var(--accent) 72%, #000);
+  --bg: #f8f9fb;
+  --surface: #ffffff;
+  --text: #14171f;
+  --text-muted: #5b6472;
+  --border: rgba(20, 23, 31, 0.10);
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(20, 23, 31, 0.08);
+  --space: 16px;
+}
+/* Theme resolution. Without data-theme the viewer's system preference decides,
+   as it always did. With it, the artifact's own choice wins in BOTH directions:
+   a page that hardcodes one palette must not be handed the opposite set of
+   tokens by the machine it happens to be opened on. The dark values appear
+   twice because a media query cannot be folded into a selector list.
+   The attribute sits inside :where() so these blocks keep the specificity of a
+   bare :root — the page's own <style> is linked after this file and must go on
+   overriding any token it wants, exactly as it could before. */
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    --accent-text: color-mix(in srgb, var(--accent) 78%, #fff);
+    --bg: #101318;
+    --surface: #181c23;
+    --text: #eef1f6;
+    --text-muted: #9aa4b2;
+    --border: rgba(238, 241, 246, 0.12);
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  }
+}
+:root:where([data-theme="dark"]) {
+  color-scheme: dark;
+  --accent-text: color-mix(in srgb, var(--accent) 78%, #fff);
+  --bg: #101318;
+  --surface: #181c23;
+  --text: #eef1f6;
+  --text-muted: #9aa4b2;
+  --border: rgba(238, 241, 246, 0.12);
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+:root:where([data-theme="light"]) { color-scheme: light; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+
+.shell-container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+.shell-section { padding: calc(var(--space) * 2) 0; }
+.shell-grid { display: grid; gap: var(--space); grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.shell-toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: var(--space); }
+.shell-footer { padding: 24px 0 40px; color: var(--text-muted); font-size: 13px; }
+
+.shell-hero { padding: calc(var(--space) * 3) 0 calc(var(--space) * 2); }
+.shell-hero h1 { font-size: clamp(26px, 4vw, 40px); line-height: 1.15; margin: 0 0 10px; text-wrap: balance; }
+.shell-hero p { color: var(--text-muted); max-width: 60ch; margin: 0; }
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: var(--space);
+}
+
+.kpi { display: flex; flex-direction: column; gap: 4px; }
+.kpi .kpi-value { font-size: 28px; font-weight: 650; line-height: 1.1; }
+.kpi .kpi-label { font-size: 13px; color: var(--text-muted); }
+.kpi .kpi-delta { font-size: 12.5px; font-weight: 600; }
+.kpi .kpi-delta.up { color: #0a8f3c; }
+.kpi .kpi-delta.down { color: #cf3131; }
+
+table.shell-table { border-collapse: collapse; width: 100%; font-size: 14px; }
+table.shell-table th {
+  text-align: left; font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--text-muted); font-weight: 600;
+}
+table.shell-table th, table.shell-table td { padding: 9px 12px 9px 0; border-bottom: 1px solid var(--border); }
+table.shell-table td.num, table.shell-table th.num { text-align: right; font-variant-numeric: tabular-nums; }
+table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 6%, transparent); }
+
+.chart-box { width: 100%; min-height: 220px; }
+.chart-box svg { width: 100%; height: auto; display: block; }
+
+.muted { color: var(--text-muted); }
+.accent { color: var(--accent-text); }
+.shell-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent-text);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .shell-fade { animation: shell-fade 400ms ease both; }
+  @keyframes shell-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+}
+
+</style>
+  
+  <style>
+    :root {
+      --accent: #2D6A4F;
+      --accent-text: #1A3D2F;
+      --accent-contrast: #FFFFFF;
+      --eco-dark: #1A3D2F;
+      --eco-primary: #2D6A4F;
+      --eco-mid: #40916C;
+      --eco-light: #52B788;
+      --eco-soft: #95D5B2;
+      --eco-mint: #D8F3DC;
+      --eco-bg: #F8FCFA;
+      --surface: #FFFFFF;
+      --text: #1A3D2F;
+      --text-muted: #5C766B;
+      --border: #DDEBE3;
+      --radius: 16px;
+      --radius-sm: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    html, body {
+      background-color: var(--eco-bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F0F7F3;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #95D5B2;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #52B788;
+    }
+
+    /* Screen transition states */
+    .screen-view {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+    }
+    .screen-view.is-active {
+      display: block;
+      opacity: 1;
+    }
+
+    /* Auth Screens Layout */
+    .auth-viewport {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      background-color: var(--eco-bg);
+    }
+    .auth-container {
+      width: 100%;
+      max-width: 980px;
+      min-height: 620px;
+      background: var(--surface);
+      border-radius: 24px;
+      box-shadow: 0 20px 45px rgba(26, 61, 47, 0.1);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    /* Auth Left Panel */
+    .auth-banner {
+      background: linear-gradient(145deg, #1A3D2F 0%, #2D6A4F 55%, #40916C 100%);
+      color: #FFFFFF;
+      padding: 3rem 2.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+    .auth-banner::before,
+    .auth-banner::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .auth-banner::before {
+      width: 260px;
+      height: 260px;
+      background: radial-gradient(circle, rgba(149, 213, 178, 0.22) 0%, rgba(149, 213, 178, 0) 70%);
+      top: -60px;
+      right: -60px;
+    }
+    .auth-banner::after {
+      width: 340px;
+      height: 340px;
+      background: radial-gradient(circle, rgba(82, 183, 136, 0.18) 0%, rgba(82, 183, 136, 0) 70%);
+      bottom: -100px;
+      left: -80px;
+    }
+
+    .banner-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(8px);
+      padding: 0.4rem 0.9rem;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      color: #D8F3DC;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      width: fit-content;
+    }
+    .banner-heading {
+      font-size: 2.25rem;
+      line-height: 1.2;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin: 1.5rem 0;
+      color: #FFFFFF;
+    }
+    .banner-highlight {
+      color: #95D5B2;
+      font-weight: 800;
+    }
+    .banner-items {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 1.15rem;
+      margin-top: 1rem;
+    }
+    .banner-item {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      font-size: 1rem;
+      color: #E8F5EE;
+      font-weight: 500;
+    }
+    .banner-item-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    /* Auth Right Panel */
+    .auth-card {
+      display: flex;
+      flex-direction: column;
+      background: #FFFFFF;
+      overflow-y: auto;
+    }
+    .auth-card-header {
+      background-color: #2D6A4F;
+      padding: 1.1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 72px;
+    }
+    .brand-logo-img {
+      height: 42px;
+      width: auto;
+      display: block;
+      object-fit: contain;
+    }
+    .auth-card-body {
+      padding: 2.5rem 2.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      flex: 1;
+    }
+    .auth-title {
+      font-size: 1.65rem;
+      font-weight: 700;
+      color: var(--eco-dark);
+      margin-bottom: 0.35rem;
+      letter-spacing: -0.3px;
+    }
+    .auth-subtitle {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.1rem;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      position: relative;
+    }
+    .form-label {
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: var(--eco-dark);
+    }
+    .form-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .form-input {
+      width: 100%;
+      height: 46px;
+      padding: 0 0.95rem;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 1rem;
+      color: var(--eco-dark);
+      background: #FAFDFB;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+    .form-input:focus {
+      border-color: var(--eco-primary);
+      background: #FFFFFF;
+      box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.15);
+    }
+    .toggle-pass-btn {
+      position: absolute;
+      right: 10px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+    }
+    .toggle-pass-btn:hover {
+      color: var(--eco-dark);
+    }
+
+    .form-row-between {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.88rem;
+    }
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      user-select: none;
+    }
+    .checkbox-label input[type="checkbox"] {
+      accent-color: var(--eco-primary);
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+    .text-link {
+      color: var(--eco-primary);
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.15s ease;
+    }
+    .text-link:hover {
+      color: var(--eco-dark);
+      text-decoration: underline;
+    }
+
+    .btn-submit {
+      width: 100%;
+      height: 48px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, #2D6A4F 0%, #40916C 100%);
+      color: #FFFFFF;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 6px 16px rgba(45, 106, 79, 0.25);
+      margin-top: 0.35rem;
+    }
+    .btn-submit:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(45, 106, 79, 0.35);
+      filter: brightness(1.05);
+    }
+    .btn-submit:active {
+      transform: translateY(0);
+    }
+
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 1.1rem 0;
+      color: var(--text-muted);
+      font-size: 0.84rem;
+      text-transform: lowercase;
+    }
+    .auth-divider::before,
+    .auth-divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .btn-google {
+      width: 100%;
+      height: 46px;
+      background: #FFFFFF;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--eco-dark);
+      font-size: 0.95rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.65rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-google:hover {
+      background: #F4FAF6;
+      border-color: #B7D9C6;
+    }
+    .btn-google svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .auth-switch-text {
+      text-align: center;
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin-top: 1.4rem;
+    }
+
+    .auth-message {
+      padding: 0.7rem 0.9rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      display: none;
+      margin-bottom: 0.8rem;
+      line-height: 1.35;
+    }
+    .auth-message.is-error {
+      display: block;
+      background: #FDEDED;
+      color: #9C2A2A;
+      border: 1px solid #F5C6C6;
+    }
+    .auth-message.is-success {
+      display: block;
+      background: #EBF7EE;
+      color: #1E6B37;
+      border: 1px solid #B8E4C5;
+    }
+
+    /* Screen 3: Site / Mapa */
+    .app-screen {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Navbar */
+    .app-navbar {
+      background-color: #2D6A4F;
+      color: #FFFFFF;
+      height: 72px;
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+    .nav-menu {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      list-style: none;
+    }
+    .nav-link {
+      color: #D8F3DC;
+      text-decoration: none;
+      font-size: 0.94rem;
+      font-weight: 500;
+      padding: 0.45rem 0.8rem;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .nav-link:hover {
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.12);
+    }
+    .nav-link.active {
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.2);
+      font-weight: 700;
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #FFFFFF;
+      font-size: 0.92rem;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 0.4rem 0.9rem;
+      border-radius: 999px;
+    }
+    .btn-logout {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #FFFFFF;
+      padding: 0.4rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    .btn-logout:hover {
+      background: rgba(255, 255, 255, 0.22);
+    }
+
+    /* Site Hero Compact */
+    .app-hero {
+      background: linear-gradient(180deg, #EAF5EE 0%, #F8FCFA 100%);
+      padding: 2.2rem 1.5rem 1.5rem;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #D8F3DC;
+      color: var(--eco-dark);
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 0.8rem;
+    }
+    .hero-title {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--eco-dark);
+      letter-spacing: -0.4px;
+      max-width: 760px;
+      margin: 0 auto 0.4rem;
+    }
+    .hero-highlight {
+      background: linear-gradient(135deg, #2D6A4F 0%, #52B788 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: #2D6A4F;
+    }
+    .hero-desc {
+      color: var(--text-muted);
+      font-size: 0.96rem;
+      max-width: 620px;
+      margin: 0 auto;
+    }
+
+    /* Map Section */
+    .map-section {
+      max-width: 1200px;
+      width: 100%;
+      margin: 1.5rem auto;
+      padding: 0 1.5rem;
+      flex: 1;
+    }
+    .map-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .filters-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .filter-btn {
+      background: #FFFFFF;
+      border: 1.5px solid var(--border);
+      color: var(--eco-dark);
+      padding: 0.45rem 0.9rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .filter-btn:hover {
+      border-color: var(--eco-light);
+      background: #F4FAF6;
+    }
+    .filter-btn.active {
+      background: var(--eco-primary);
+      color: #FFFFFF;
+      border-color: var(--eco-primary);
+      box-shadow: 0 2px 8px rgba(45, 106, 79, 0.25);
+    }
+
+    .btn-locate {
+      background: #FFFFFF;
+      border: 1.5px solid #3B82F6;
+      color: #1D4ED8;
+      padding: 0.45rem 1rem;
+      border-radius: 999px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(59, 130, 246, 0.15);
+    }
+    .btn-locate:hover {
+      background: #EFF6FF;
+      transform: translateY(-1px);
+    }
+
+    /* Map Canvas Frame */
+    .map-frame {
+      position: relative;
+      width: 100%;
+      height: 560px;
+      background: #DDF1E7;
+      border-radius: 20px;
+      box-shadow: 0 16px 36px rgba(26, 61, 47, 0.08);
+      border: 2px solid #C4E4D3;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    .map-svg-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Map Pins */
+    .map-pin {
+      position: absolute;
+      transform: translate(-50%, -100%);
+      cursor: pointer;
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+      z-index: 10;
+      outline: none;
+    }
+    .map-pin:hover,
+    .map-pin:focus-visible {
+      transform: translate(-50%, -115%) scale(1.18);
+      z-index: 20;
+    }
+    .map-pin.is-dimmed {
+      opacity: 0.18;
+      pointer-events: none;
+    }
+    .pin-graphic {
+      width: 38px;
+      height: 48px;
+      filter: drop-shadow(0 6px 8px rgba(26, 61, 47, 0.35));
+      display: block;
+    }
+    .pin-pulse-ring {
+      position: absolute;
+      bottom: 2px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 22px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(45, 106, 79, 0.4);
+      animation: pinShadow 2s infinite ease-out;
+      pointer-events: none;
+      z-index: -1;
+    }
+    @keyframes pinShadow {
+      0% { transform: translateX(-50%) scale(0.8); opacity: 0.6; }
+      50% { transform: translateX(-50%) scale(1.3); opacity: 0.2; }
+      100% { transform: translateX(-50%) scale(0.8); opacity: 0.6; }
+    }
+
+    /* User Pin (Blue) */
+    .user-pin {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      z-index: 15;
+      display: none;
+      pointer-events: none;
+    }
+    .user-pin.is-visible {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .user-pin-core {
+      width: 18px;
+      height: 18px;
+      background: #2563EB;
+      border: 3px solid #FFFFFF;
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+      position: relative;
+      z-index: 2;
+    }
+    .user-pin-wave {
+      position: absolute;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(37, 99, 235, 0.25);
+      animation: pulseWave 2s infinite ease-out;
+    }
+    @keyframes pulseWave {
+      0% { transform: scale(0.4); opacity: 1; }
+      100% { transform: scale(1.5); opacity: 0; }
+    }
+
+    /* Map Info Overlay Card (Pin details) */
+    .map-card-popup {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      width: 320px;
+      max-width: calc(100% - 40px);
+      background: #FFFFFF;
+      border-radius: 16px;
+      box-shadow: 0 12px 30px rgba(26, 61, 47, 0.16);
+      border: 1px solid var(--border);
+      padding: 1.15rem;
+      z-index: 30;
+      display: none;
+      animation: popupSlide 0.25s ease-out;
+    }
+    .map-card-popup.is-open {
+      display: block;
+    }
+    @keyframes popupSlide {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .popup-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.4rem;
+    }
+    .popup-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--eco-dark);
+      line-height: 1.3;
+    }
+    .popup-close {
+      background: #F0F4F2;
+      border: none;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+    .popup-close:hover {
+      background: #E2ECE6;
+      color: var(--eco-dark);
+    }
+    .popup-address {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .popup-tags-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+    }
+    .popup-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-bottom: 0.85rem;
+    }
+    .tag-pill {
+      background: #E8F5EE;
+      color: #2D6A4F;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid #C5E6D3;
+    }
+    .popup-action-btn {
+      width: 100%;
+      padding: 0.55rem;
+      background: #F4FAF6;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--eco-primary);
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    .popup-action-btn:hover {
+      background: #EAF4EE;
+    }
+
+    /* Active Pin Highlight */
+    .map-pin.is-active {
+      transform: translate(-50%, -115%) scale(1.22);
+      z-index: 25;
+    }
+    .map-pin.is-active .pin-pulse-ring {
+      width: 32px;
+      height: 14px;
+      background: rgba(45, 106, 79, 0.7);
+      animation: pinActivePulse 1.2s infinite ease-out;
+    }
+    @keyframes pinActivePulse {
+      0% { transform: translateX(-50%) scale(0.9); opacity: 0.9; box-shadow: 0 0 0 0 rgba(45, 106, 79, 0.6); }
+      70% { transform: translateX(-50%) scale(1.6); opacity: 0.1; box-shadow: 0 0 0 10px rgba(45, 106, 79, 0); }
+      100% { transform: translateX(-50%) scale(0.9); opacity: 0; }
+    }
+
+    /* Informações e Painéis Abaixo do Mapa */
+    .map-bottom-container {
+      margin-top: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* Card Proximidade / Minha Localização Abaixo do Mapa */
+    .nearest-result-card {
+      background: #FFFFFF;
+      border-radius: var(--radius);
+      border: 1px solid #BBDDF5;
+      border-left: 6px solid #2563EB;
+      padding: 1.1rem 1.4rem;
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.08);
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      animation: slideInDown 0.3s ease-out;
+    }
+    .nearest-result-card.is-visible {
+      display: flex;
+    }
+    .nearest-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .nearest-icon-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #EFF6FF;
+      color: #2563EB;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .nearest-icon-badge::after {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 2px solid rgba(37, 99, 235, 0.5);
+      animation: pulseWave 1.8s infinite ease-out;
+    }
+    .nearest-title-sub {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #2563EB;
+      margin-bottom: 0.15rem;
+    }
+    .nearest-body-text {
+      font-size: 1.02rem;
+      color: var(--eco-dark);
+      font-weight: 600;
+    }
+    .nearest-body-text strong {
+      color: #1D4ED8;
+    }
+    .nearest-distance-badge {
+      background: #EFF6FF;
+      color: #1E40AF;
+      border: 1px solid #BFDBFE;
+      padding: 0.35rem 0.8rem;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    /* Painel de Detalhes do Ponto Abaixo do Mapa */
+    .location-details-card {
+      background: #FFFFFF;
+      border-radius: 20px;
+      box-shadow: 0 14px 35px rgba(26, 61, 47, 0.09);
+      border: 1px solid var(--border);
+      border-left: 6px solid var(--eco-primary);
+      padding: 1.75rem 2rem;
+      position: relative;
+      animation: slideInDown 0.3s ease-out;
+    }
+    @keyframes slideInDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .location-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-bottom: 0.9rem;
+      border-bottom: 1px solid #EEF5F1;
+      margin-bottom: 1.1rem;
+    }
+    .location-badge-title {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      color: var(--eco-primary);
+      background: #E8F5EE;
+      padding: 0.3rem 0.75rem;
+      border-radius: 999px;
+    }
+    .btn-close-detail {
+      background: #F4FAF6;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+    }
+    .btn-close-detail:hover {
+      background: #E5F3EB;
+      color: var(--eco-dark);
+      transform: rotate(90deg);
+    }
+
+    .detail-point-name {
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: var(--eco-dark);
+      line-height: 1.25;
+      margin-bottom: 0.75rem;
+    }
+    .detail-meta-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 1.35rem;
+    }
+    .detail-info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .detail-info-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .detail-info-val {
+      font-size: 0.98rem;
+      color: var(--eco-dark);
+      font-weight: 500;
+      line-height: 1.4;
+    }
+    .detail-info-bairro {
+      display: inline-block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #2D6A4F;
+      background: #EAF7EF;
+      padding: 0.15rem 0.55rem;
+      border-radius: 6px;
+      margin-left: 0.35rem;
+    }
+
+    .detail-materials-block {
+      background: #F8FCFA;
+      border: 1px solid #E1EFE7;
+      border-radius: 12px;
+      padding: 1rem 1.2rem;
+    }
+    .detail-materials-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--eco-dark);
+      margin-bottom: 0.65rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .materials-pills-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .material-pill {
+      background: #D8F3DC;
+      color: #1B4332;
+      font-size: 0.84rem;
+      font-weight: 700;
+      padding: 0.35rem 0.8rem;
+      border-radius: 999px;
+      border: 1px solid #B7E4C7;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      box-shadow: 0 1px 3px rgba(27, 67, 50, 0.08);
+    }
+
+    /* Seção da Lista de Pontos Abaixo */
+    .points-section-wrap {
+      background: #FFFFFF;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      padding: 1.6rem;
+      box-shadow: 0 10px 28px rgba(26, 61, 47, 0.05);
+    }
+    .points-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid #EEF5F1;
+    }
+    .points-section-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+    .points-section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--eco-dark);
+    }
+    .points-count-badge {
+      background: #E8F5EE;
+      color: #2D6A4F;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      border: 1px solid #C4E5D4;
+    }
+    .points-list-instruction {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Grid com Cards Compactos Horizontais */
+    .points-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1rem;
+    }
+    .point-card-item {
+      background: #FDFEFE;
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem 1.15rem;
+      cursor: pointer;
+      transition: all 0.22s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 0.75rem;
+      position: relative;
+    }
+    .point-card-item:hover {
+      border-color: var(--eco-mid);
+      background: #F6FCF8;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(45, 106, 79, 0.12);
+    }
+    .point-card-item.is-selected {
+      border-color: var(--eco-primary);
+      background: #EFF8F3;
+      box-shadow: 0 0 0 2px var(--eco-primary), 0 8px 18px rgba(45, 106, 79, 0.15);
+    }
+    .point-card-item.is-hidden {
+      display: none;
+    }
+    .card-top-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    .card-point-name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--eco-dark);
+      line-height: 1.3;
+    }
+    .card-bairro-tag {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: #2D6A4F;
+      background: #E8F5EE;
+      padding: 0.2rem 0.5rem;
+      border-radius: 999px;
+      white-space: nowrap;
+      border: 1px solid #CCE7D8;
+    }
+    .card-address-text {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      line-height: 1.35;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.3rem;
+    }
+    .card-pills-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .card-pill-mini {
+      background: #EBF7EE;
+      color: #1E5E3D;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 999px;
+      border: 1px solid #CDEBD8;
+    }
+
+    /* Map Overlays: watermark & legend */
+    .map-badge-discreet {
+      position: absolute;
+      bottom: 12px;
+      right: 14px;
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(4px);
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      pointer-events: none;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      font-weight: 500;
+      z-index: 5;
+    }
+    .map-legend {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(6px);
+      border-radius: 12px;
+      padding: 0.6rem 0.85rem;
+      box-shadow: 0 4px 12px rgba(26, 61, 47, 0.08);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      z-index: 5;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--eco-dark);
+    }
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .legend-dot.green { background: #2D6A4F; }
+    .legend-dot.blue { background: #2563EB; }
+    .legend-dot.river { background: #A0CBE8; border-radius: 2px; height: 4px; width: 14px; }
+
+    /* Footer - Strictly required content only */
+    .eco-footer {
+      background: #FFFFFF;
+      border-top: 1px solid var(--border);
+      padding: 1.5rem;
+      margin-top: auto;
+    }
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .footer-copy {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .footer-links {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      list-style: none;
+    }
+    .footer-link {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.15s ease;
+      cursor: pointer;
+    }
+    .footer-link:hover {
+      color: var(--eco-primary);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 860px) {
+      .auth-container {
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
+      .auth-banner {
+        padding: 1.75rem 1.5rem;
+      }
+      .banner-heading {
+        font-size: 1.5rem;
+        margin: 0.75rem 0;
+      }
+      .banner-items {
+        gap: 0.65rem;
+      }
+      .auth-card-body {
+        padding: 1.75rem 1.5rem;
+      }
+      .map-frame {
+        height: 440px;
+      }
+      .nav-menu {
+        display: none;
+      }
+      .detail-meta-grid {
+        grid-template-columns: 1fr;
+        gap: 0.9rem;
+      }
+      .location-details-card {
+        padding: 1.35rem 1.25rem;
+      }
+      .detail-point-name {
+        font-size: 1.35rem;
+      }
+      .nearest-result-card {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .auth-viewport {
+        padding: 0.75rem;
+      }
+      .map-section {
+        padding: 0 1rem;
+      }
+      .map-frame {
+        height: 360px;
+      }
+      .points-cards-grid {
+        grid-template-columns: 1fr;
+      }
+      .footer-content {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================== -->
+  <!-- TELA 1 — LOGIN (Visível por padrão no HTML) -->
+  <!-- ========================================== -->
+  <main id="screen-login" class="screen-view is-active">
+    <div class="auth-viewport">
+      <div class="auth-container">
+        <!-- Banner Esquerdo -->
+        <div class="auth-banner">
+          <div>
+            <div class="banner-badge">🌱 Sustentabilidade . Troca . Mapa</div>
+            <h1 class="banner-heading">
+              TRANSFORME O DESCARTE EM <span class="banner-highlight">OPORTUNIDADE</span>.
+            </h1>
+          </div>
+          <ul class="banner-items">
+            <li class="banner-item">
+              <span class="banner-item-icon">📍</span>
+              <span>Pontos perto de você</span>
+            </li>
+            <li class="banner-item">
+              <span class="banner-item-icon">♻️</span>
+              <span>Trocas sustentáveis</span>
+            </li>
+            <li class="banner-item">
+              <span class="banner-item-icon">📊</span>
+              <span>Seu impacto</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Cartão Direito -->
+        <div class="auth-card">
+          <div class="auth-card-header">
+            <img class="brand-logo-img" src="https://generated-images.adapta.one/dias21biel%40gmail.com/01a0d9a1-b790-73be-87f5-86105a97498b/2026-09-25T17-57-58-944Z_Original_user_intent_Tool_generated_image_directi.png" alt="EcoEra Logo">
+          </div>
+          <div class="auth-card-body">
+            <h2 class="auth-title">Bem-vindo de volta!</h2>
+            <p class="auth-subtitle">Acesse para localizar pontos ecológicos e realizar trocas.</p>
+
+            <div id="login-alert" class="auth-message" role="alert"></div>
+
+            <form id="login-form" class="auth-form" novalidate>
+              <div class="form-group">
+                <label class="form-label" for="login-email">E-mail</label>
+                <div class="form-input-wrap">
+                  <input class="form-input" type="email" id="login-email" placeholder="seu@email.com" autocomplete="email" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="login-password">Senha</label>
+                <div class="form-input-wrap">
+                  <input class="form-input" type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" required>
+                  <button type="button" class="toggle-pass-btn" data-target="login-password" aria-label="Mostrar ou ocultar senha">👁</button>
+                </div>
+              </div>
+
+              <div class="form-row-between">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="login-remember">
+                  <span>Lembrar de mim</span>
+                </label>
+                <a href="#recuperar" id="link-forgot-pass" class="text-link">Esqueceu a senha?</a>
+              </div>
+
+              <button type="submit" class="btn-submit">Entrar</button>
+
+              <div class="auth-divider">ou</div>
+
+              <button type="button" id="btn-google-login" class="btn-google">
+                <svg viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                </svg>
+                <span>Entrar com Google</span>
+              </button>
+            </form>
+
+            <p class="auth-switch-text">
+              Não tem conta? <a href="#cadastro" id="link-to-register" class="text-link">Criar conta</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========================================== -->
+  <!-- TELA 2 — CRIAR CONTA                       -->
+  <!-- ========================================== -->
+  <main id="screen-register" class="screen-view">
+    <div class="auth-viewport">
+      <div class="auth-container">
+        <!-- Banner Esquerdo -->
+        <div class="auth-banner">
+          <div>
+            <div class="banner-badge">🌱 Sustentabilidade . Troca . Mapa</div>
+            <h1 class="banner-heading">
+              TRANSFORME O DESCARTE EM <span class="banner-highlight">OPORTUNIDADE</span>.
+            </h1>
+          </div>
+          <ul class="banner-items">
+            <li class="banner-item">
+              <span class="banner-item-icon">📍</span>
+              <span>Pontos perto de você</span>
+            </li>
+            <li class="banner-item">
+              <span class="banner-item-icon">♻️</span>
+              <span>Trocas sustentáveis</span>
+            </li>
+            <li class="banner-item">
+              <span class="banner-item-icon">📊</span>
+              <span>Seu impacto</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Cartão Direito -->
+        <div class="auth-card">
+          <div class="auth-card-header">
+            <img class="brand-logo-img" src="https://generated-images.adapta.one/dias21biel%40gmail.com/01a0d9a1-b790-73be-87f5-86105a97498b/2026-09-25T17-57-58-944Z_Original_user_intent_Tool_generated_image_directi.png" alt="EcoEra Logo">
+          </div>
+          <div class="auth-card-body">
+            <h2 class="auth-title">Crie sua conta</h2>
+            <p class="auth-subtitle">Participe da rede colaborativa de sustentabilidade.</p>
+
+            <div id="register-alert" class="auth-message" role="alert"></div>
+
+            <form id="register-form" class="auth-form" novalidate>
+              <div class="form-group">
+                <label class="form-label" for="reg-name">Nome completo</label>
+                <div class="form-input-wrap">
+                  <input class="form-input" type="text" id="reg-name" placeholder="Seu nome completo" autocomplete="name" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="reg-email">E-mail</label>
+                <div class="form-input-wrap">
+                  <input class="form-input" type="email" id="reg-email" placeholder="seu@email.com" autocomplete="email" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="reg-password">Senha (mínimo 6 caracteres)</label>
+                <div class="form-input-wrap">
+                  <input class="form-input" type="password" id="reg-password" placeholder="Ao menos 6 caracteres" autocomplete="new-password" required>
+                  <button type="button" class="toggle-pass-btn" data-target="reg-password" aria-label="Mostrar ou ocultar senha">👁</button>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="reg-confirm">Confirmar senha</label>
+                <div class="form-input-wrap">
+                  <input class="form-input" type="password" id="reg-confirm" placeholder="Repita sua senha" autocomplete="new-password" required>
+                  <button type="button" class="toggle-pass-btn" data-target="reg-confirm" aria-label="Mostrar ou ocultar senha">👁</button>
+                </div>
+              </div>
+
+              <button type="submit" class="btn-submit">Criar minha conta</button>
+            </form>
+
+            <p class="auth-switch-text">
+              Já tem conta? <a href="#login" id="link-to-login" class="text-link">Entrar</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========================================== -->
+  <!-- TELA 3 — SITE / MAPA                       -->
+  <!-- ========================================== -->
+  <div id="screen-app" class="screen-view app-screen">
+    <!-- Navbar sólida #2D6A4F -->
+    <header class="app-navbar">
+      <div class="nav-left">
+        <img class="brand-logo-img" src="https://generated-images.adapta.one/dias21biel%40gmail.com/01a0d9a1-b790-73be-87f5-86105a97498b/2026-09-25T17-57-58-944Z_Original_user_intent_Tool_generated_image_directi.png" alt="EcoEra Logo">
+        <nav>
+          <ul class="nav-menu">
+            <li><a class="nav-link" id="nav-btn-inicio">Início</a></li>
+            <li><a class="nav-link" id="nav-btn-trocas">Trocas</a></li>
+            <li><a class="nav-link active" id="nav-btn-mapa">Mapa</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="nav-right">
+        <div class="user-pill">
+          <span id="nav-user-name">👤 Amigo(a)</span>
+        </div>
+        <button id="btn-logout" class="btn-logout" type="button">Sair</button>
+      </div>
+    </header>
+
+    <!-- Hero Compacto -->
+    <section class="app-hero">
+      <div class="hero-badge">🌱 Sustentabilidade . Troca . Mapa</div>
+      <h2 class="hero-title">
+        TRANSFORME O DESCARTE EM <span class="hero-highlight">OPORTUNIDADE</span>.
+      </h2>
+      <p class="hero-desc">Explore os pontos de coleta e reciclagem em Vila Verde e faça a diferença na sua comunidade.</p>
+    </section>
+
+    <!-- Mapa Interativo -->
+    <section class="map-section">
+      <div class="map-toolbar">
+        <div class="filters-wrap" id="materials-filter">
+          <button type="button" class="filter-btn active" data-material="all">Todos</button>
+          <button type="button" class="filter-btn" data-material="Papel">📄 Papel</button>
+          <button type="button" class="filter-btn" data-material="Plástico">🧴 Plástico</button>
+          <button type="button" class="filter-btn" data-material="Vidro">🍾 Vidro</button>
+          <button type="button" class="filter-btn" data-material="Metal">🥫 Metal</button>
+          <button type="button" class="filter-btn" data-material="Eletrônicos">🔋 Eletrônicos</button>
+        </div>
+
+        <button type="button" id="btn-user-location" class="btn-locate">
+          <span>📍</span>
+          <span>Minha localização</span>
+        </button>
+      </div>
+
+      <!-- Container do Mapa -->
+      <div class="map-frame" id="map-canvas">
+        <!-- SVG Geográfico de Vila Verde -->
+        <svg class="map-svg-layer" viewBox="0 0 1000 650" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="riverGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#90C5E7"/>
+              <stop offset="50%" stop-color="#A5D4F2"/>
+              <stop offset="100%" stop-color="#80BCE3"/>
+            </linearGradient>
+            <pattern id="gridPattern" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.2"/>
+            </pattern>
+          </defs>
+
+          <!-- Fundo base -->
+          <rect width="1000" height="650" fill="#E2F1E8"/>
+          <rect width="1000" height="650" fill="url(#gridPattern)"/>
+
+          <!-- Quarteirões pastéis dos bairros -->
+          <!-- Zona Noroeste: Alto das Flores -->
+          <rect x="40" y="40" width="220" height="150" rx="16" fill="#D2E8DB" opacity="0.85"/>
+          <rect x="70" y="70" width="80" height="45" rx="8" fill="#C5DFD0"/>
+          <rect x="165" y="70" width="75" height="100" rx="8" fill="#C5DFD0"/>
+
+          <!-- Zona Norte Central: Jardim Aurora -->
+          <rect x="310" y="40" width="280" height="170" rx="16" fill="#D6ECDE" opacity="0.9"/>
+          <rect x="330" y="60" width="110" height="60" rx="8" fill="#C7E2D1"/>
+          <rect x="460" y="60" width="110" height="130" rx="8" fill="#C7E2D1"/>
+          <rect x="330" y="135" width="110" height="55" rx="8" fill="#C7E2D1"/>
+
+          <!-- Zona Nordeste: Vila Marista -->
+          <rect x="660" y="40" width="290" height="180" rx="16" fill="#D0E7DA" opacity="0.85"/>
+          <rect x="680" y="60" width="120" height="70" rx="8" fill="#BFDDCB"/>
+          <rect x="820" y="60" width="110" height="140" rx="8" fill="#BFDDCB"/>
+
+          <!-- Grande Parque Central Ecológico -->
+          <rect x="340" y="260" width="290" height="150" rx="24" fill="#B7E2C6" stroke="#9FD5B2" stroke-width="2"/>
+          <!-- Árvores decorativas no parque -->
+          <circle cx="380" cy="295" r="14" fill="#40916C" opacity="0.8"/>
+          <circle cx="410" cy="310" r="18" fill="#2D6A4F" opacity="0.75"/>
+          <circle cx="450" cy="285" r="16" fill="#52B788" opacity="0.85"/>
+          <circle cx="510" cy="305" r="20" fill="#2D6A4F" opacity="0.75"/>
+          <circle cx="560" cy="290" r="15" fill="#40916C" opacity="0.8"/>
+          <circle cx="390" cy="360" r="17" fill="#52B788" opacity="0.85"/>
+          <circle cx="440" cy="370" r="22" fill="#2D6A4F" opacity="0.8"/>
+          <circle cx="500" cy="365" r="16" fill="#40916C" opacity="0.85"/>
+          <circle cx="570" cy="355" r="18" fill="#52B788" opacity="0.8"/>
+          <text x="485" y="338" font-size="13" font-weight="700" fill="#1A3D2F" opacity="0.65" text-anchor="middle" letter-spacing="1">PARQUE CENTRAL</text>
+
+          <!-- Zona Centro / Comercial -->
+          <rect x="50" y="250" width="240" height="170" rx="16" fill="#D9ECE0"/>
+          <rect x="70" y="270" width="95" height="60" rx="8" fill="#CADFCF"/>
+          <rect x="180" y="270" width="90" height="130" rx="8" fill="#CADFCF"/>
+
+          <!-- Zona Sul: Parque das Nações -->
+          <rect x="60" y="460" width="360" height="150" rx="16" fill="#D4EADB"/>
+          <rect x="85" y="480" width="150" height="110" rx="8" fill="#C2DEC9"/>
+          <rect x="255" y="480" width="145" height="110" rx="8" fill="#C2DEC9"/>
+
+          <!-- Zona Sudeste: Vila Verde -->
+          <rect x="580" y="460" width="370" height="150" rx="16" fill="#CFE8D7"/>
+          <rect x="605" y="480" width="160" height="110" rx="8" fill="#BFDDC8"/>
+          <rect x="785" y="480" width="145" height="110" rx="8" fill="#BFDDC8"/>
+
+          <!-- Rio Curvado (Azul Claro) -->
+          <path d="M -20 180 C 220 190, 260 210, 310 230 C 440 280, 520 220, 640 280 C 760 340, 840 430, 1020 440"
+                fill="none" stroke="url(#riverGrad)" stroke-width="36" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M -20 180 C 220 190, 260 210, 310 230 C 440 280, 520 220, 640 280 C 760 340, 840 430, 1020 440"
+                fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-dasharray="8 12" opacity="0.45"/>
+
+          <!-- Pontes sobre o rio -->
+          <rect x="270" y="200" width="24" height="42" rx="4" fill="#E8ECE9" stroke="#9BB2A5" stroke-width="1.5" transform="rotate(-15 282 221)"/>
+          <rect x="635" y="260" width="24" height="46" rx="4" fill="#E8ECE9" stroke="#9BB2A5" stroke-width="1.5" transform="rotate(35 647 283)"/>
+          <rect x="800" y="375" width="24" height="44" rx="4" fill="#E8ECE9" stroke="#9BB2A5" stroke-width="1.5" transform="rotate(45 812 397)"/>
+
+          <!-- Avenidas principais em branco -->
+          <!-- Avenidas horizontais -->
+          <line x1="0" y1="230" x2="1000" y2="230" stroke="#FFFFFF" stroke-width="12" opacity="0.85"/>
+          <line x1="0" y1="440" x2="1000" y2="440" stroke="#FFFFFF" stroke-width="12" opacity="0.85"/>
+          <!-- Avenidas verticais -->
+          <line x1="300" y1="0" x2="300" y2="650" stroke="#FFFFFF" stroke-width="12" opacity="0.85"/>
+          <line x1="640" y1="0" x2="640" y2="650" stroke="#FFFFFF" stroke-width="12" opacity="0.85"/>
+
+          <!-- Rótulos dos Bairros -->
+          <text x="150" y="115" font-size="14" font-weight="700" fill="#1A3D2F" opacity="0.75" text-anchor="middle">Alto das Flores</text>
+          <text x="450" y="105" font-size="14" font-weight="700" fill="#1A3D2F" opacity="0.75" text-anchor="middle">Jardim Aurora</text>
+          <text x="805" y="110" font-size="14" font-weight="700" fill="#1A3D2F" opacity="0.75" text-anchor="middle">Vila Marista</text>
+          <text x="170" y="335" font-size="14" font-weight="700" fill="#1A3D2F" opacity="0.75" text-anchor="middle">Centro</text>
+          <text x="240" y="535" font-size="14" font-weight="700" fill="#1A3D2F" opacity="0.75" text-anchor="middle">Parque das Nações</text>
+          <text x="765" y="535" font-size="14" font-weight="700" fill="#1A3D2F" opacity="0.75" text-anchor="middle">Vila Verde</text>
+        </svg>
+
+        <!-- Elemento de Ponto do Usuário (Minha localização) -->
+        <div id="user-location-marker" class="user-pin" style="left: 23%; top: 54%;">
+          <div class="user-pin-wave"></div>
+          <div class="user-pin-core"></div>
+        </div>
+
+        <!-- Legenda -->
+        <div class="map-legend">
+          <div class="legend-item">
+            <span class="legend-dot green"></span>
+            <span>EcoPonto</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot blue"></span>
+            <span>Você</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot river"></span>
+            <span>Rio Verde</span>
+          </div>
+        </div>
+
+        <!-- Aviso discreto interno -->
+        <div class="map-badge-discreet">Mapa fictício</div>
+
+        <!-- Camada de Pinos em HTML posicionados em % -->
+        <div id="map-pins-container"></div>
+      </div>
+
+      <!-- ÁREA DE INFORMAÇÕES ABAIXO DO MAPA -->
+      <div class="map-bottom-container">
+        <!-- 3) Painel 'Minha Localização' Abaixo do Mapa -->
+        <div id="nearest-card" class="nearest-result-card" role="region" aria-label="Ponto mais próximo">
+          <div class="nearest-left">
+            <div class="nearest-icon-badge">📍</div>
+            <div>
+              <div class="nearest-title-sub">Minha Localização</div>
+              <div class="nearest-body-text">
+                Ponto mais próximo de você: <strong id="nearest-name">Central de Reciclagem Centro</strong>
+              </div>
+            </div>
+          </div>
+          <div class="nearest-distance-badge" id="nearest-distance">0,85 km</div>
+        </div>
+
+        <!-- 1) Painel de Detalhes do Ponto Abaixo do Mapa -->
+        <div id="location-detail-panel" class="location-details-card" role="region" aria-labelledby="detail-title">
+          <div class="location-header">
+            <div class="location-badge-title">📍 Localização</div>
+            <button type="button" id="btn-close-details" class="btn-close-detail" aria-label="Fechar detalhes">✕</button>
+          </div>
+
+          <h3 id="detail-title" class="detail-point-name">Central de Reciclagem Centro</h3>
+
+          <div class="detail-meta-grid">
+            <div class="detail-info-item">
+              <span class="detail-info-label">📍 Endereço Completo</span>
+              <span id="detail-address" class="detail-info-val">
+                Praça da República, 12 <span id="detail-bairro" class="detail-info-bairro">Centro</span>
+              </span>
+            </div>
+            <div class="detail-info-item">
+              <span class="detail-info-label">🕒 Horário de Funcionamento</span>
+              <span id="detail-hours" class="detail-info-val">Segunda a Sábado: 07h às 20h</span>
+            </div>
+          </div>
+
+          <div class="detail-materials-block">
+            <div class="detail-materials-title">
+              <span>♻️ Materiais Aceitos neste Ponto:</span>
+            </div>
+            <div id="detail-materials-pills" class="materials-pills-wrap"></div>
+          </div>
+        </div>
+
+        <!-- 2) Lista de Pontos Abaixo do Mapa -->
+        <div class="points-section-wrap">
+          <div class="points-section-header">
+            <div class="points-section-title-wrap">
+              <h3 class="points-section-title">Pontos de Coleta Cadastrados</h3>
+              <span id="points-count-tag" class="points-count-badge">9 pontos</span>
+            </div>
+            <span class="points-list-instruction">Clique em qualquer ponto para destacar no mapa</span>
+          </div>
+
+          <div id="points-cards-list" class="points-cards-grid">
+            <!-- Cards gerados dinamicamente via JavaScript -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Rodapé estrito -->
+    <footer class="eco-footer">
+      <div class="footer-content">
+        <div class="footer-copy">© 2026 EcoEra — Sustentabilidade . Troca . Mapa</div>
+        <ul class="footer-links">
+          <li><a class="footer-link" id="foot-inicio">Início</a></li>
+          <li><a class="footer-link" id="foot-trocas">Trocas</a></li>
+          <li><a class="footer-link" id="foot-mapa">Mapa</a></li>
+          <li><a class="footer-link" id="foot-sobre">Sobre</a></li>
+        </ul>
+      </div>
+    </footer>
+  </div>
+
+  <!-- SCRIPT PRINCIPAL AO FIM DO CORPO -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Colecao de dados dos 9 pontos de reciclagem em Vila Verde com bairros e horarios ficticios
+      const recyclePoints = [
+        {
+          id: 1,
+          name: 'EcoPonto Alto das Flores',
+          address: 'Rua das Camélias, 140',
+          bairro: 'Alto das Flores',
+          hours: 'Seg. a Sex. 08h às 18h | Sáb. 08h às 13h',
+          materials: ['Papel', 'Plástico', 'Vidro'],
+          coords: { x: 15, y: 18 }
+        },
+        {
+          id: 2,
+          name: 'Estação Verde Aurora',
+          address: 'Av. Aurora Boreal, 520',
+          bairro: 'Jardim Aurora',
+          hours: 'Seg. a Sex. 07h30 às 18h30 | Sáb. 08h às 12h',
+          materials: ['Papel', 'Metal', 'Eletrônicos'],
+          coords: { x: 44, y: 16 }
+        },
+        {
+          id: 3,
+          name: 'Ponto Limpo Marista',
+          address: 'Alameda dos Ipês, 88',
+          bairro: 'Vila Marista',
+          hours: 'Terça a Sábado: 09h às 17h',
+          materials: ['Plástico', 'Vidro', 'Metal'],
+          coords: { x: 80, y: 22 }
+        },
+        {
+          id: 4,
+          name: 'Central de Reciclagem Centro',
+          address: 'Praça da República, 12',
+          bairro: 'Centro',
+          hours: 'Segunda a Domingo: 07h às 20h',
+          materials: ['Papel', 'Plástico', 'Vidro', 'Metal', 'Eletrônicos'],
+          coords: { x: 21, y: 46 }
+        },
+        {
+          id: 5,
+          name: 'EcoParque Central',
+          address: 'Alameda Verde, s/n (Entrada Sul)',
+          bairro: 'Parque Central',
+          hours: 'Terça a Domingo: 06h às 19h',
+          materials: ['Plástico', 'Papel', 'Vidro'],
+          coords: { x: 49, y: 52 }
+        },
+        {
+          id: 6,
+          name: 'Ponto Tecnológico Nações',
+          address: 'Av. das Nações Unidas, 340',
+          bairro: 'Parque das Nações',
+          hours: 'Seg. a Sex. 09h às 18h | Plantão Quinzenal',
+          materials: ['Eletrônicos', 'Metal'],
+          coords: { x: 33, y: 84 }
+        },
+        {
+          id: 7,
+          name: 'Coleta Seletiva Sul',
+          address: 'Rua 7 de Setembro, 205',
+          bairro: 'Parque das Nações',
+          hours: 'Segunda a Sábado: 08h às 17h',
+          materials: ['Papel', 'Plástico', 'Metal'],
+          coords: { x: 14, y: 76 }
+        },
+        {
+          id: 8,
+          name: 'EcoHub Vila Verde',
+          address: 'Av. Brasil Verde, 1010',
+          bairro: 'Vila Verde',
+          hours: 'Seg. a Sex. 08h às 19h | Sáb. 08h às 16h',
+          materials: ['Papel', 'Plástico', 'Vidro', 'Metal', 'Eletrônicos'],
+          coords: { x: 74, y: 74 }
+        },
+        {
+          id: 9,
+          name: 'Estação Leste Sustentável',
+          address: 'Rua das Palmeiras, 45',
+          bairro: 'Vila Verde',
+          hours: 'Segunda a Sexta: 08h às 17h',
+          materials: ['Vidro', 'Metal'],
+          coords: { x: 89, y: 64 }
+        }
+      ];
+
+      // Estado simples da aplicacao
+      let currentUser = null;
+      let activeFilter = 'all';
+      let selectedPointId = 4; // Central de Reciclagem Centro selecionado por padrao
+
+      // Elementos de tela
+      const screenLogin = document.getElementById('screen-login');
+      const screenRegister = document.getElementById('screen-register');
+      const screenApp = document.getElementById('screen-app');
+
+      // Troca de telas
+      function showScreen(screen) {
+        [screenLogin, screenRegister, screenApp].forEach(s => {
+          s.classList.remove('is-active');
+        });
+        screen.classList.add('is-active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // Navegacao entre Login e Cadastro
+      const linkToRegister = document.getElementById('link-to-register');
+      const linkToLogin = document.getElementById('link-to-login');
+      if (linkToRegister) linkToRegister.addEventListener('click', (e) => { e.preventDefault(); showScreen(screenRegister); clearAlerts(); });
+      if (linkToLogin) linkToLogin.addEventListener('click', (e) => { e.preventDefault(); showScreen(screenLogin); clearAlerts(); });
+
+      // Links do cabecalho e rodape
+      const navInicio = document.getElementById('nav-btn-inicio');
+      const navTrocas = document.getElementById('nav-btn-trocas');
+      const navMapa = document.getElementById('nav-btn-mapa');
+      const footInicio = document.getElementById('foot-inicio');
+      const footTrocas = document.getElementById('foot-trocas');
+      const footMapa = document.getElementById('foot-mapa');
+      const footSobre = document.getElementById('foot-sobre');
+
+      function handleNavFeedback(name) {
+        const heroDesc = document.querySelector('.hero-desc');
+        if (name === 'Início') {
+          heroDesc.textContent = 'Bem-vindo ao portal EcoEra. Descubra os recursos para uma vida mais sustentável.';
+        } else if (name === 'Trocas') {
+          heroDesc.textContent = 'Área de trocas sustentáveis: conecte-se com pessoas próximas e reutilize itens.';
+        } else {
+          heroDesc.textContent = 'Explore os pontos de coleta e reciclagem em Vila Verde e faça a diferença na sua comunidade.';
+        }
+        [navInicio, navTrocas, navMapa].forEach(n => {
+          if (n) n.classList.remove('active');
+        });
+        if (name === 'Mapa' && navMapa) navMapa.classList.add('active');
+        if (name === 'Início' && navInicio) navInicio.classList.add('active');
+        if (name === 'Trocas' && navTrocas) navTrocas.classList.add('active');
+      }
+
+      if (navInicio) navInicio.addEventListener('click', () => handleNavFeedback('Início'));
+      if (navTrocas) navTrocas.addEventListener('click', () => handleNavFeedback('Trocas'));
+      if (navMapa) navMapa.addEventListener('click', () => handleNavFeedback('Mapa'));
+      if (footInicio) footInicio.addEventListener('click', () => { handleNavFeedback('Início'); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+      if (footTrocas) footTrocas.addEventListener('click', () => { handleNavFeedback('Trocas'); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+      if (footMapa) footMapa.addEventListener('click', () => { handleNavFeedback('Mapa'); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+      if (footSobre) footSobre.addEventListener('click', () => {
+        alert('EcoEra — Plataforma de sustentabilidade e mapa ecológico colaborativo.');
+      });
+
+      // Alternar visualizacao de senhas
+      document.querySelectorAll('.toggle-pass-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const targetId = btn.getAttribute('data-target');
+          const input = document.getElementById(targetId);
+          if (input) {
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+            btn.textContent = isPassword ? '🙈' : '👁';
+          }
+        });
+      });
+
+      // Alertas visuais
+      const loginAlert = document.getElementById('login-alert');
+      const registerAlert = document.getElementById('register-alert');
+
+      function showAlert(el, msg, type) {
+        if (!el) return;
+        el.textContent = msg;
+        el.className = 'auth-message ' + (type === 'error' ? 'is-error' : 'is-success');
+      }
+
+      function clearAlerts() {
+        if (loginAlert) { loginAlert.className = 'auth-message'; loginAlert.textContent = ''; }
+        if (registerAlert) { registerAlert.className = 'auth-message'; registerAlert.textContent = ''; }
+      }
+
+      // Base de usuarios com fallback seguro
+      function getStoredUsers() {
+        try {
+          const raw = localStorage.getItem('eco_users');
+          return raw ? JSON.parse(raw) : [];
+        } catch (_) {
+          return window._ecoUsersMem || [];
+        }
+      }
+
+      function saveStoredUsers(users) {
+        try {
+          localStorage.setItem('eco_users', JSON.stringify(users));
+        } catch (_) {
+          window._ecoUsersMem = users;
+        }
+      }
+
+      function getStoredSession() {
+        try {
+          const local = localStorage.getItem('eco_user');
+          if (local) return JSON.parse(local);
+          const sess = sessionStorage.getItem('eco_user');
+          if (sess) return JSON.parse(sess);
+        } catch (_) {
+          return window._ecoActiveUser || null;
+        }
+        return null;
+      }
+
+      function setSession(user, remember) {
+        try {
+          if (remember) {
+            localStorage.setItem('eco_user', JSON.stringify(user));
+          } else {
+            sessionStorage.setItem('eco_user', JSON.stringify(user));
+          }
+        } catch (_) {
+          window._ecoActiveUser = user;
+        }
+      }
+
+      function clearSession() {
+        try {
+          localStorage.removeItem('eco_user');
+          sessionStorage.removeItem('eco_user');
+        } catch (_) {}
+        window._ecoActiveUser = null;
+      }
+
+      // Atualiza interface do usuario logado
+      function setLoggedInState(user) {
+        currentUser = user;
+        const nameEl = document.getElementById('nav-user-name');
+        if (nameEl && user) {
+          nameEl.textContent = '👤 ' + (user.name || 'Visitante');
+        }
+        showScreen(screenApp);
+      }
+
+      // Logout
+      const btnLogout = document.getElementById('btn-logout');
+      if (btnLogout) {
+        btnLogout.addEventListener('click', () => {
+          clearSession();
+          currentUser = null;
+          document.getElementById('login-form').reset();
+          showScreen(screenLogin);
+        });
+      }
+
+      // Formulario de Criar Conta
+      const registerForm = document.getElementById('register-form');
+      if (registerForm) {
+        registerForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const name = document.getElementById('reg-name').value.trim();
+          const email = document.getElementById('reg-email').value.trim().toLowerCase();
+          const password = document.getElementById('reg-password').value;
+          const confirm = document.getElementById('reg-confirm').value;
+
+          if (!name) {
+            showAlert(registerAlert, 'Por favor, preencha o seu nome completo.', 'error');
+            return;
+          }
+          const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!email || !emailPattern.test(email)) {
+            showAlert(registerAlert, 'Por favor, informe um endereço de e-mail válido.', 'error');
+            return;
+          }
+          if (!password || password.length < 6) {
+            showAlert(registerAlert, 'A senha deve conter no mínimo 6 caracteres.', 'error');
+            return;
+          }
+          if (password !== confirm) {
+            showAlert(registerAlert, 'As senhas informadas não coincidem.', 'error');
+            return;
+          }
+
+          const users = getStoredUsers();
+          const exists = users.some(u => u.email === email);
+          if (exists) {
+            showAlert(registerAlert, 'Este e-mail já está cadastrado no sistema.', 'error');
+            return;
+          }
+
+          const newUser = { name, email, password };
+          users.push(newUser);
+          saveStoredUsers(users);
+          setSession(newUser, true);
+
+          showAlert(registerAlert, `Bem-vindo(a), ${name}! Acessando o mapa...`, 'success');
+          setTimeout(() => {
+            setLoggedInState(newUser);
+            registerForm.reset();
+            clearAlerts();
+          }, 600);
+        });
+      }
+
+      // Formulario de Login
+      const loginForm = document.getElementById('login-form');
+      if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const email = document.getElementById('login-email').value.trim().toLowerCase();
+          const password = document.getElementById('login-password').value;
+          const remember = document.getElementById('login-remember').checked;
+
+          if (!email || !password) {
+            showAlert(loginAlert, 'Preencha o e-mail e a senha para continuar.', 'error');
+            return;
+          }
+
+          const users = getStoredUsers();
+          const user = users.find(u => u.email === email && u.password === password);
+
+          if (user) {
+            setSession(user, remember);
+            setLoggedInState(user);
+            loginForm.reset();
+            clearAlerts();
+          } else {
+            showAlert(loginAlert, 'E-mail ou senha incorretos.', 'error');
+          }
+        });
+      }
+
+      // Login com Google (Visitante)
+      const btnGoogleLogin = document.getElementById('btn-google-login');
+      if (btnGoogleLogin) {
+        btnGoogleLogin.addEventListener('click', () => {
+          const guestUser = { name: 'Visitante', email: 'visitante@ecoera.com' };
+          setSession(guestUser, false);
+          setLoggedInState(guestUser);
+        });
+      }
+
+      // Link Esqueceu a senha
+      const linkForgot = document.getElementById('link-forgot-pass');
+      if (linkForgot) {
+        linkForgot.addEventListener('click', (e) => {
+          e.preventDefault();
+          showAlert(loginAlert, 'Para redefinir sua senha, solicite suporte com seu e-mail cadastrado.', 'success');
+        });
+      }
+
+      // Elementos do Painel de Detalhes Abaixo do Mapa
+      const locationDetailPanel = document.getElementById('location-detail-panel');
+      const detailTitle = document.getElementById('detail-title');
+      const detailAddress = document.getElementById('detail-address');
+      const detailHours = document.getElementById('detail-hours');
+      const detailMaterialsPills = document.getElementById('detail-materials-pills');
+      const btnCloseDetails = document.getElementById('btn-close-details');
+
+      // Elementos da Lista de Pontos Abaixo do Mapa
+      const pointsCardsList = document.getElementById('points-cards-list');
+      const pointsCountTag = document.getElementById('points-count-tag');
+
+      // Elementos de Minha Localização
+      const btnLocate = document.getElementById('btn-user-location');
+      const userMarker = document.getElementById('user-location-marker');
+      const nearestCard = document.getElementById('nearest-card');
+      const nearestName = document.getElementById('nearest-name');
+      const nearestDist = document.getElementById('nearest-distance');
+
+      const pinsContainer = document.getElementById('map-pins-container');
+
+      // Exibe os detalhes do ponto no painel grande abaixo do mapa
+      function showPointDetails(point, scrollIntoView = false) {
+        if (!point) return;
+        selectedPointId = point.id;
+
+        detailTitle.textContent = point.name;
+        detailAddress.innerHTML = `${point.address} <span class="detail-info-bairro">${point.bairro}</span>`;
+        detailHours.textContent = point.hours;
+
+        // Pílulas de materiais aceitos em verde claro
+        detailMaterialsPills.innerHTML = '';
+        point.materials.forEach(mat => {
+          const pill = document.createElement('span');
+          pill.className = 'material-pill';
+          pill.innerHTML = `<span>✓</span><span>${mat}</span>`;
+          detailMaterialsPills.appendChild(pill);
+        });
+
+        locationDetailPanel.style.display = 'block';
+
+        // Atualiza destaque dos pinos no mapa
+        document.querySelectorAll('.map-pin').forEach(pin => {
+          if (parseInt(pin.getAttribute('data-id')) === point.id) {
+            pin.classList.add('is-active');
+          } else {
+            pin.classList.remove('is-active');
+          }
+        });
+
+        // Atualiza destaque na lista de cards
+        document.querySelectorAll('.point-card-item').forEach(card => {
+          if (parseInt(card.getAttribute('data-id')) === point.id) {
+            card.classList.add('is-selected');
+          } else {
+            card.classList.remove('is-selected');
+          }
+        });
+
+        if (scrollIntoView) {
+          locationDetailPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }
+
+      function hidePointDetails() {
+        locationDetailPanel.style.display = 'none';
+        selectedPointId = null;
+        document.querySelectorAll('.map-pin').forEach(pin => pin.classList.remove('is-active'));
+        document.querySelectorAll('.point-card-item').forEach(card => card.classList.remove('is-selected'));
+      }
+
+      if (btnCloseDetails) {
+        btnCloseDetails.addEventListener('click', hidePointDetails);
+      }
+
+      // Renderizacao dos Pinos no Mapa
+      function renderPins() {
+        if (!pinsContainer) return;
+        pinsContainer.innerHTML = '';
+
+        recyclePoints.forEach(point => {
+          const pin = document.createElement('button');
+          pin.type = 'button';
+          pin.className = 'map-pin';
+          if (point.id === selectedPointId) pin.classList.add('is-active');
+          pin.style.left = point.coords.x + '%';
+          pin.style.top = point.coords.y + '%';
+          pin.setAttribute('aria-label', point.name);
+          pin.setAttribute('data-id', point.id);
+
+          const matches = activeFilter === 'all' || point.materials.includes(activeFilter);
+          if (!matches) {
+            pin.classList.add('is-dimmed');
+          }
+
+          pin.innerHTML = `
+            <svg class="pin-graphic" viewBox="0 0 36 46" fill="none">
+              <path d="M18 0C8.05887 0 0 8.05887 0 18C0 29.5 18 46 18 46C18 46 36 29.5 36 18C36 8.05887 27.9411 0 18 0Z" fill="#2D6A4F"/>
+              <path d="M18 2C9.16344 2 2 9.16344 2 18C2 28.2 16.6 42.6 18 44C19.4 42.6 34 28.2 34 18C34 9.16344 26.8366 2 18 2Z" fill="#40916C" opacity="0.4"/>
+              <circle cx="18" cy="18" r="11" fill="#FFFFFF"/>
+              <!-- Folha ecológica central -->
+              <path d="M18 10C14.5 10 12.5 13 12.5 16.5C12.5 20.5 17 25 18 26C19 25 23.5 20.5 23.5 16.5C23.5 13 21.5 10 18 10ZM17.2 21.5C16.8 19 15.5 16.8 14 16C15.8 16 17.5 17.5 18.2 21.5H17.2Z" fill="#2D6A4F"/>
+            </svg>
+            <div class="pin-pulse-ring"></div>
+          `;
+
+          pin.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showPointDetails(point, true);
+          });
+
+          pinsContainer.appendChild(pin);
+        });
+      }
+
+      // Renderizacao da Lista dos 9 Pontos de Coleta Abaixo do Mapa
+      function renderPointsList() {
+        if (!pointsCardsList) return;
+        pointsCardsList.innerHTML = '';
+
+        let visibleCount = 0;
+
+        recyclePoints.forEach(point => {
+          const matches = activeFilter === 'all' || point.materials.includes(activeFilter);
+          if (matches) visibleCount++;
+
+          const card = document.createElement('article');
+          card.className = 'point-card-item' + (matches ? '' : ' is-hidden') + (point.id === selectedPointId ? ' is-selected' : '');
+          card.setAttribute('data-id', point.id);
+          card.setAttribute('role', 'button');
+          card.setAttribute('tabindex', '0');
+
+          card.innerHTML = `
+            <div>
+              <div class="card-top-row">
+                <h4 class="card-point-name">${point.name}</h4>
+                <span class="card-bairro-tag">${point.bairro}</span>
+              </div>
+              <p class="card-address-text">
+                <span>📍</span>
+                <span>${point.address}</span>
+              </p>
+            </div>
+            <div class="card-pills-row">
+              ${point.materials.map(m => `<span class="card-pill-mini">${m}</span>`).join('')}
+            </div>
+          `;
+
+          card.addEventListener('click', () => {
+            showPointDetails(point, true);
+          });
+
+          card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              showPointDetails(point, true);
+            }
+          });
+
+          pointsCardsList.appendChild(card);
+        });
+
+        if (pointsCountTag) {
+          pointsCountTag.textContent = `${visibleCount} de ${recyclePoints.length} pontos`;
+        }
+      }
+
+      // Filtros de Materiais
+      const filterButtons = document.querySelectorAll('#materials-filter .filter-btn');
+      filterButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeFilter = btn.getAttribute('data-material') || 'all';
+          renderPins();
+          renderPointsList();
+        });
+      });
+
+      // Minha Localizacao e calculo de proximidade ficticio
+      const userCoords = { x: 23, y: 54 }; // Localizacao do usuario no Centro
+
+      if (btnLocate) {
+        btnLocate.addEventListener('click', () => {
+          if (userMarker) {
+            userMarker.style.left = userCoords.x + '%';
+            userMarker.style.top = userCoords.y + '%';
+            userMarker.classList.add('is-visible');
+          }
+
+          // Encontra o ponto mais proximo
+          let closest = null;
+          let minDistance = Infinity;
+
+          recyclePoints.forEach(pt => {
+            const dx = pt.coords.x - userCoords.x;
+            const dy = pt.coords.y - userCoords.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < minDistance) {
+              minDistance = dist;
+              closest = pt;
+            }
+          });
+
+          if (closest && nearestCard) {
+            const km = (minDistance * 0.08 + 0.35).toFixed(2);
+            nearestName.textContent = closest.name;
+            nearestDist.textContent = km + ' km';
+            nearestCard.classList.add('is-visible');
+
+            // Abre os detalhes do ponto mais proximo no painel abaixo
+            showPointDetails(closest, true);
+          }
+        });
+      }
+
+      // Inicializa pinos, detalhes e lista
+      renderPins();
+      renderPointsList();
+
+      // Ponto padrão exibido inicialmente abaixo do mapa
+      const defaultPoint = recyclePoints.find(p => p.id === 4) || recyclePoints[0];
+      if (defaultPoint) {
+        showPointDetails(defaultPoint, false);
+      }
+
+      // Checa se ja havia sessao salva
+      const activeSession = getStoredSession();
+      if (activeSession) {
+        setLoggedInState(activeSession);
+      }
+    });
+  </script>
+<script>
+/* Skip artifact shell — fixed helpers served beside every artifact. */
+(function () {
+  "use strict";
+
+  var fmt = {
+    num: function (v, opts) { return new Intl.NumberFormat("pt-BR", opts || {}).format(v); },
+    brl: function (v) { return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v); },
+    pct: function (v) { return new Intl.NumberFormat("pt-BR", { style: "percent", maximumFractionDigits: 1 }).format(v); }
+  };
+
+  // axisFmt keeps axis tick labels short (compact notation) so long values
+  // (e.g. full BRL amounts) never clip against the plot edge.
+  function axisFmt(v) {
+    return fmt.num(v, { notation: "compact", maximumFractionDigits: 1 });
+  }
+
+  // format accepts a function OR one of the fmt names ("num" | "brl" | "pct").
+  function coerceFormat(spec) {
+    if (typeof spec === "function") return spec;
+    if (typeof spec === "string" && fmt[spec]) return fmt[spec];
+    return function (v) { return fmt.num(v); };
+  }
+
+  function accent() {
+    return getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#2563eb";
+  }
+  function mutedColor() {
+    return getComputedStyle(document.documentElement).getPropertyValue("--text-muted").trim() || "#5b6472";
+  }
+  function svgEl(tag, attrs) {
+    var el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    for (var k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  }
+  function frame(el, w, h) {
+    var svg = svgEl("svg", { viewBox: "0 0 " + w + " " + h, role: "img" });
+    el.innerHTML = "";
+    el.appendChild(svg);
+    return svg;
+  }
+
+  // maxOf guards the axis scale: empty values would give -Infinity (truthy,
+  // so "|| 1" can't catch it) and a non-positive max would flip the chart.
+  function maxOf(values) {
+    var m = values.length ? Math.max.apply(null, values) : 0;
+    return m > 0 ? m : 1;
+  }
+
+  // bar(el, {labels:[], values:[], color?, format?}) — vertical bar chart.
+  function bar(el, cfg) {
+    var W = 640, H = 280, padL = 46, padB = 30, padT = 12;
+    var svg = frame(el, W, H);
+    var max = maxOf(cfg.values);
+    var n = cfg.values.length;
+    var plotW = W - padL - 12, plotH = H - padT - padB;
+    var step = plotW / n, bw = Math.min(step * 0.62, 64);
+    var color = cfg.color || accent();
+    var f = coerceFormat(cfg.format);
+    for (var g = 0; g <= 4; g++) {
+      var gy = padT + plotH - (plotH * g) / 4;
+      svg.appendChild(svgEl("line", { x1: padL, y1: gy, x2: W - 12, y2: gy, stroke: "currentColor", "stroke-opacity": 0.08 }));
+      var lbl = svgEl("text", { x: padL - 8, y: gy + 4, "text-anchor": "end", "font-size": 10, fill: mutedColor() });
+      lbl.textContent = axisFmt((max * g) / 4);
+      svg.appendChild(lbl);
+    }
+    cfg.values.forEach(function (v, i) {
+      var bh = Math.max(0, (v / max) * plotH);
+      var x = padL + i * step + (step - bw) / 2;
+      var y = padT + plotH - bh;
+      var r = svgEl("rect", { x: x, y: y, width: bw, height: bh, rx: 4, fill: color });
+      var t = svgEl("title", {});
+      t.textContent = cfg.labels[i] + ": " + f(v);
+      r.appendChild(t);
+      svg.appendChild(r);
+      var tx = svgEl("text", { x: x + bw / 2, y: H - 10, "text-anchor": "middle", "font-size": 11, fill: mutedColor() });
+      tx.textContent = cfg.labels[i];
+      svg.appendChild(tx);
+    });
+  }
+
+  // line(el, {labels:[], values:[], color?, format?}) — single-series line.
+  function line(el, cfg) {
+    var W = 640, H = 280, padL = 46, padB = 30, padT = 12;
+    var svg = frame(el, W, H);
+    var max = maxOf(cfg.values);
+    var n = cfg.values.length;
+    var plotW = W - padL - 16, plotH = H - padT - padB;
+    var color = cfg.color || accent();
+    var f = coerceFormat(cfg.format);
+    for (var g = 0; g <= 4; g++) {
+      var gy = padT + plotH - (plotH * g) / 4;
+      svg.appendChild(svgEl("line", { x1: padL, y1: gy, x2: W - 16, y2: gy, stroke: "currentColor", "stroke-opacity": 0.08 }));
+      var lbl = svgEl("text", { x: padL - 8, y: gy + 4, "text-anchor": "end", "font-size": 10, fill: mutedColor() });
+      lbl.textContent = axisFmt((max * g) / 4);
+      svg.appendChild(lbl);
+    }
+    var pts = cfg.values.map(function (v, i) {
+      var x = padL + (n === 1 ? plotW / 2 : (plotW * i) / (n - 1));
+      var y = padT + plotH - (v / max) * plotH;
+      return [x, y];
+    });
+    var d = pts.map(function (p, i) { return (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1); }).join(" ");
+    svg.appendChild(svgEl("path", { d: d, fill: "none", stroke: color, "stroke-width": 2, "stroke-linejoin": "round" }));
+    pts.forEach(function (p, i) {
+      var c = svgEl("circle", { cx: p[0], cy: p[1], r: 3.5, fill: color });
+      var t = svgEl("title", {});
+      t.textContent = cfg.labels[i] + ": " + f(cfg.values[i]);
+      c.appendChild(t);
+      svg.appendChild(c);
+      var tx = svgEl("text", { x: p[0], y: H - 10, "text-anchor": "middle", "font-size": 11, fill: mutedColor() });
+      tx.textContent = cfg.labels[i];
+      svg.appendChild(tx);
+    });
+  }
+
+  // donut(el, {labels:[], values:[], colors?}) — donut with center total.
+  function donut(el, cfg) {
+    var W = 320, H = 280, cx = W / 2, cy = H / 2, R = 92, r = 58;
+    var svg = frame(el, W, H);
+    var total = cfg.values.reduce(function (a, b) { return a + b; }, 0) || 1;
+    var palette = cfg.colors || [accent(), "#1baf7a", "#eda100", "#e34948", "#4a3aa7", "#e87ba4"];
+    var a0 = -Math.PI / 2;
+    cfg.values.forEach(function (v, i) {
+      var a1 = a0 + (v / total) * Math.PI * 2;
+      var large = a1 - a0 > Math.PI ? 1 : 0;
+      var p = ["M", cx + R * Math.cos(a0), cy + R * Math.sin(a0),
+        "A", R, R, 0, large, 1, cx + R * Math.cos(a1), cy + R * Math.sin(a1),
+        "L", cx + r * Math.cos(a1), cy + r * Math.sin(a1),
+        "A", r, r, 0, large, 0, cx + r * Math.cos(a0), cy + r * Math.sin(a0), "Z"].join(" ");
+      var path = svgEl("path", { d: p, fill: palette[i % palette.length] });
+      var t = svgEl("title", {});
+      t.textContent = cfg.labels[i] + ": " + fmt.num(v) + " (" + fmt.pct(v / total) + ")";
+      path.appendChild(t);
+      svg.appendChild(path);
+      a0 = a1;
+    });
+    var center = svgEl("text", { x: cx, y: cy + 5, "text-anchor": "middle", "font-size": 20, "font-weight": 650, fill: "currentColor" });
+    center.textContent = fmt.num(total);
+    svg.appendChild(center);
+  }
+
+  window.skipShell = { fmt: fmt };
+  window.skipChart = { bar: bar, line: line, donut: donut };
+})();
+
+</script>
+</body>
+</html>
