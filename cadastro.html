@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoEra — Criar Conta</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basecoat-css@1.0.2/dist/basecoat.cdn.min.css">
+  <style>
+/* Skip artifact shell — fixed styles served beside every artifact.
+    Complements basecoat; artifacts override --accent for their own identity. */
+:root {
+  color-scheme: light dark;
+  --accent: #2563eb;
+  --accent-contrast: #ffffff;
+  --accent-text: color-mix(in srgb, var(--accent) 72%, #000);
+  --bg: #f8f9fb;
+  --surface: #ffffff;
+  --text: #14171f;
+  --text-muted: #5b6472;
+  --border: rgba(20, 23, 31, 0.10);
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(20, 23, 31, 0.08);
+  --space: 16px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    --accent-text: color-mix(in srgb, var(--accent) 78%, #fff);
+    --bg: #101318;
+    --surface: #181c23;
+    --text: #eef1f6;
+    --text-muted: #9aa4b2;
+    --border: rgba(238, 241, 246, 0.12);
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  }
+}
+:root:where([data-theme="dark"]) {
+  color-scheme: dark;
+  --accent-text: color-mix(in srgb, var(--accent) 78%, #fff);
+  --bg: #101318;
+  --surface: #181c23;
+  --text: #eef1f6;
+  --text-muted: #9aa4b2;
+  --border: rgba(238, 241, 246, 0.12);
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+:root:where([data-theme="light"]) { color-scheme: light; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+</style>
+  <style>
+    :root {
+      --accent: #2D6A4F;
+      --accent-deep: #1A3D2F;
+      --accent-mid: #40916C;
+      --accent-light: #52B788;
+      --accent-highlight: #95D5B2;
+      --bg-page: #F8FCFA;
+      --surface-white: #FFFFFF;
+      --border-soft: #E2ECE6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--accent-deep);
+      scroll-behavior: smooth;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F0F7F4;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--accent-mid);
+      border-radius: 4px;
+    }
+
+    .page-layout {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .main-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 1040px;
+      min-height: 620px;
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      background: var(--surface-white);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 16px 40px -10px rgba(26, 61, 47, 0.12), 0 4px 16px -2px rgba(26, 61, 47, 0.06);
+      border: 1px solid var(--border-soft);
+      animation: fadeInCard 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    @keyframes fadeInCard {
+      from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.99);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* Painel Esquerdo */
+    .brand-side {
+      position: relative;
+      background: linear-gradient(145deg, #1A3D2F 0%, #2D6A4F 55%, #40916C 100%);
+      color: #FFFFFF;
+      padding: 3.5rem 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+
+    .decor-circle-1 {
+      position: absolute;
+      top: -80px;
+      right: -80px;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(149, 213, 178, 0.22) 0%, rgba(149, 213, 178, 0) 70%);
+      pointer-events: none;
+    }
+
+    .decor-circle-2 {
+      position: absolute;
+      bottom: -60px;
+      left: -60px;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(82, 183, 136, 0.25) 0%, rgba(82, 183, 136, 0) 70%);
+      pointer-events: none;
+    }
+
+    .decor-leaf {
+      position: absolute;
+      width: 140px;
+      height: 140px;
+      border: 2px solid rgba(149, 213, 178, 0.15);
+      border-radius: 0 100px 0 100px;
+      transform: rotate(45deg);
+      right: 15%;
+      bottom: 25%;
+      pointer-events: none;
+    }
+
+    .brand-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(8px);
+      padding: 0.45rem 0.95rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #FFFFFF;
+      letter-spacing: 0.3px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      margin-bottom: 2rem;
+    }
+
+    .brand-title {
+      font-size: 2.25rem;
+      line-height: 1.22;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 1.25rem;
+      text-transform: uppercase;
+      color: #FFFFFF;
+    }
+
+    .brand-title .highlight {
+      color: var(--accent-highlight);
+    }
+
+    .brand-desc {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 2.5rem;
+      max-width: 420px;
+    }
+
+    .features-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      font-size: 0.98rem;
+      font-weight: 500;
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(4px);
+    }
+
+    .feature-icon {
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+
+    /* Painel Direito (Formulário) */
+    .form-side {
+      display: flex;
+      flex-direction: column;
+      background: #FFFFFF;
+    }
+
+    .logo-strip {
+      background: #2D6A4F;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .brand-logo-img {
+      height: 44px;
+      width: auto;
+      max-width: 80%;
+      object-fit: contain;
+      display: block;
+      border: none;
+      box-shadow: none;
+      border-radius: 0;
+    }
+
+    .form-content {
+      padding: 2.5rem 3rem 3rem 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      flex: 1;
+    }
+
+    .form-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--accent-deep);
+      letter-spacing: -0.4px;
+      margin-bottom: 0.35rem;
+    }
+
+    .form-subtitle {
+      font-size: 0.95rem;
+      color: #557065;
+    }
+
+    .form-group {
+      margin-bottom: 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .form-label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--accent-deep);
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .form-input {
+      width: 100%;
+      height: 46px;
+      padding: 0 1rem;
+      font-size: 0.95rem;
+      border: 1.5px solid #CFE0D7;
+      border-radius: 12px;
+      color: var(--accent-deep);
+      background: #FAFCFA;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--accent);
+      background: #FFFFFF;
+      box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.15);
+    }
+
+    .form-input.has-toggle {
+      padding-right: 2.8rem;
+    }
+
+    .toggle-pass-btn {
+      position: absolute;
+      right: 0.75rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #648174;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.35rem;
+      border-radius: 8px;
+      transition: color 0.15s ease;
+    }
+
+    .toggle-pass-btn:hover {
+      color: var(--accent-deep);
+    }
+
+    .toggle-pass-btn:focus-visible {
+      outline: 2px solid var(--accent);
+    }
+
+    /* Termos checkbox */
+    .terms-row {
+      display: flex;
+      align-items: center;
+      margin: 1rem 0 1.25rem 0;
+      font-size: 0.88rem;
+    }
+
+    .checkbox-container {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      user-select: none;
+      color: #385549;
+      font-weight: 500;
+    }
+
+    .checkbox-container input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 1.8px solid #95B5A5;
+      border-radius: 5px;
+      background: #FFFFFF;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .checkbox-container input[type="checkbox"]:checked {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .checkbox-container input[type="checkbox"]:checked::after {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 5px;
+      width: 4px;
+      height: 8px;
+      border: solid #FFFFFF;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    .checkbox-container a {
+      color: var(--accent-mid);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .checkbox-container a:hover {
+      text-decoration: underline;
+    }
+
+    /* Alertas */
+    .alert-box {
+      display: none;
+      padding: 0.8rem 1rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 1.25rem;
+      animation: alertSlide 0.25s ease-out;
+    }
+
+    @keyframes alertSlide {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .alert-error {
+      background-color: #FDF2F2;
+      color: #9B1C1C;
+      border: 1px solid #F8B4B4;
+    }
+
+    .alert-success {
+      background-color: #ECFDF5;
+      color: #065F46;
+      border: 1px solid #A7F3D0;
+    }
+
+    /* Botão Principal */
+    .btn-submit {
+      width: 100%;
+      height: 48px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #52B788 0%, #2D6A4F 100%);
+      color: #FFFFFF;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(45, 106, 79, 0.25);
+      transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+    }
+
+    .btn-submit:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(45, 106, 79, 0.32);
+      filter: brightness(1.03);
+    }
+
+    .btn-submit:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.75;
+      cursor: not-allowed;
+    }
+
+    .card-footer {
+      margin-top: 1.5rem;
+      text-align: center;
+      font-size: 0.95rem;
+      color: #557065;
+    }
+
+    .card-footer a {
+      color: var(--accent);
+      font-weight: 700;
+      text-decoration: none;
+      margin-left: 0.25rem;
+      transition: color 0.15s ease;
+    }
+
+    .card-footer a:hover {
+      text-decoration: underline;
+      color: var(--accent-deep);
+    }
+
+    /* Rodapé da Página */
+    .site-footer {
+      padding: 1.5rem;
+      text-align: center;
+      font-size: 0.88rem;
+      color: #4F6B5F;
+      border-top: 1px solid #E5EFE9;
+      background: #FFFFFF;
+    }
+
+    .footer-links {
+      margin-top: 0.5rem;
+      display: flex;
+      justify-content: center;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.15s ease;
+    }
+
+    .footer-links a:hover {
+      text-decoration: underline;
+      color: var(--accent-deep);
+    }
+
+    /* Responsividade */
+    @media (max-width: 880px) {
+      .login-container {
+        grid-template-columns: 1fr;
+        max-width: 520px;
+        min-height: auto;
+        border-radius: 20px;
+      }
+
+      .brand-side {
+        padding: 2.25rem 2rem;
+      }
+
+      .brand-title {
+        font-size: 1.75rem;
+        margin-bottom: 0.85rem;
+      }
+
+      .brand-desc {
+        font-size: 0.95rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .features-list {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0.65rem;
+      }
+
+      .feature-item {
+        padding: 0.6rem 0.85rem;
+        font-size: 0.92rem;
+      }
+
+      .form-content {
+        padding: 2rem 1.75rem 2.25rem 1.75rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .main-wrapper {
+        padding: 1rem 0.75rem;
+      }
+
+      .brand-side {
+        padding: 1.75rem 1.25rem;
+      }
+
+      .form-content {
+        padding: 1.75rem 1.25rem;
+      }
+
+      .form-title {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-layout">
+    <main class="main-wrapper">
+      <div class="login-container">
+        <!-- PAINEL ESQUERDO DA MARCA -->
+        <section class="brand-side" aria-label="Apresentação EcoEra">
+          <div class="decor-circle-1"></div>
+          <div class="decor-circle-2"></div>
+          <div class="decor-leaf"></div>
+
+          <div class="brand-content">
+            <div class="brand-badge">
+              <span>🌱 Sustentabilidade . Troca . Mapa</span>
+            </div>
+
+            <h1 class="brand-title">
+              FAÇA PARTE DA <span class="highlight">MUDANÇA</span>.
+            </h1>
+
+            <p class="brand-desc">
+              Crie sua conta para começar a trocar itens, localizar pontos ecológicos e monitorar seu impacto ambiental.
+            </p>
+
+            <div class="features-list">
+              <div class="feature-item">
+                <span class="feature-icon">📍</span>
+                <span>Encontre EcoPontos rápidos</span>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon">♻️</span>
+                <span>Anuncie e troque itens facilmente</span>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon">📊</span>
+                <span>Acompanhe suas estatísticas</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- CARTÃO DE CADASTRO -->
+        <section class="form-side" aria-label="Formulário para criar conta">
+          <div class="logo-strip">
+            <img 
+              src="https://generated-images.adapta.one/dias21biel%40gmail.com/01a0d9a1-b790-73be-87f5-86105a97498b/2026-09-25T17-57-58-944Z_Original_user_intent_Tool_generated_image_directi.png" 
+              alt="Logo EcoEra" 
+              class="brand-logo-img"
+            >
+          </div>
+
+          <div class="form-content">
+            <div class="form-header">
+              <h2 class="form-title">Crie sua conta</h2>
+              <p class="form-subtitle">Preencha os campos abaixo para se cadastrar</p>
+            </div>
+
+            <!-- Avisos Visuais -->
+            <div id="alertNotice" class="alert-box" role="alert" aria-live="polite"></div>
+
+            <form id="registerForm" novalidate>
+              <div class="form-group">
+                <label for="nameInput" class="form-label">Nome Completo</label>
+                <div class="input-wrapper">
+                  <input 
+                    type="text" 
+                    id="nameInput" 
+                    name="name" 
+                    class="form-input" 
+                    placeholder="Seu nome completo" 
+                    autocomplete="name" 
+                    required
+                  >
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="emailInput" class="form-label">E-mail</label>
+                <div class="input-wrapper">
+                  <input 
+                    type="email" 
+                    id="emailInput" 
+                    name="email" 
+                    class="form-input" 
+                    placeholder="seuemail@exemplo.com" 
+                    autocomplete="email" 
+                    required
+                  >
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="passwordInput" class="form-label">Senha</label>
+                <div class="input-wrapper">
+                  <input 
+                    type="password" 
+                    id="passwordInput" 
+                    name="password" 
+                    class="form-input has-toggle" 
+                    placeholder="Mínimo de 6 caracteres" 
+                    autocomplete="new-password" 
+                    required
+                  >
+                  <button 
+                    type="button" 
+                    id="togglePassBtn" 
+                    class="toggle-pass-btn" 
+                    aria-label="Mostrar ou ocultar senha"
+                  >
+                    <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="terms-row">
+                <label class="checkbox-container">
+                  <input type="checkbox" id="termsCheck" required>
+                  <span>Li e concordo com os <a href="#" id="termsLink">Termos de Uso</a></span>
+                </label>
+              </div>
+
+              <button type="submit" id="submitBtn" class="btn-submit">
+                <span>Cadastrar</span>
+              </button>
+            </form>
+
+            <div class="card-footer">
+              <span>Já tem uma conta?</span>
+              <a href="index.html">Entrar</a>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- RODAPÉ DA PÁGINA -->
+    <footer class="site-footer">
+      <p>© 2026 EcoEra — Sustentabilidade . Troca . Mapa</p>
+      <div class="footer-links">
+        <a href="inicial.html">Entrar</a>
+        <a href="cadastro.html">Criar conta</a>
+        <a href="mapa.html">Mapa</a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      function safeGet(key) {
+        try {
+          var val = localStorage.getItem(key);
+          if (val) return val;
+        } catch (e) {}
+        try {
+          var valSes = sessionStorage.getItem(key);
+          if (valSes) return valSes;
+        } catch (e) {}
+        return null;
+      }
+
+      function safeSet(key, value) {
+        try { localStorage.setItem(key, value); } catch (e) {}
+      }
+
+      var registerForm = document.getElementById('registerForm');
+      var nameInput = document.getElementById('nameInput');
+      var emailInput = document.getElementById('emailInput');
+      var passwordInput = document.getElementById('passwordInput');
+      var termsCheck = document.getElementById('termsCheck');
+      var togglePassBtn = document.getElementById('togglePassBtn');
+      var submitBtn = document.getElementById('submitBtn');
+      var alertNotice = document.getElementById('alertNotice');
+      var termsLink = document.getElementById('termsLink');
+
+      function showAlert(message, type) {
+        alertNotice.textContent = message;
+        alertNotice.className = 'alert-box ' + (type === 'success' ? 'alert-success' : 'alert-error');
+        alertNotice.style.display = 'block';
+      }
+
+      function hideAlert() {
+        alertNotice.textContent = '';
+        alertNotice.style.display = 'none';
+      }
+
+      // Alternar visualização de senha
+      var isPasswordVisible = false;
+      togglePassBtn.addEventListener('click', function () {
+        isPasswordVisible = !isPasswordVisible;
+        passwordInput.type = isPasswordVisible ? 'text' : 'password';
+        togglePassBtn.innerHTML = isPasswordVisible 
+          ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>'
+          : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+      });
+
+      function isValidEmail(email) {
+        var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(String(email).trim().toLowerCase());
+      }
+
+      termsLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        showAlert('Ao utilizar o EcoEra, você concorda com nossas práticas de sustentabilidade e privacidade.', 'success');
+      });
+
+      registerForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        hideAlert();
+
+        var nameVal = nameInput.value.trim();
+        var emailVal = emailInput.value.trim();
+        var passVal = passwordInput.value;
+
+        if (!nameVal) {
+          showAlert('Por favor, informe seu nome completo.', 'error');
+          nameInput.focus();
+          return;
+        }
+
+        if (!emailVal || !isValidEmail(emailVal)) {
+          showAlert('Preencha um e-mail válido.', 'error');
+          emailInput.focus();
+          return;
+        }
+
+        if (!passVal || passVal.length < 6) {
+          showAlert('A senha precisa ter pelo menos 6 caracteres.', 'error');
+          passwordInput.focus();
+          return;
+        }
+
+        if (!termsCheck.checked) {
+          showAlert('Você precisa aceitar os Termos de Uso para continuar.', 'error');
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span>Criando conta...</span>';
+
+        setTimeout(function () {
+          // Recupera os usuários já cadastrados no localStorage (ou cria array vazio)
+          var storedUsers = safeGet('ecoera_users');
+          var usersList = [];
+          try {
+            if (storedUsers) usersList = JSON.parse(storedUsers);
+          } catch (err) {
+            usersList = [];
+          }
+
+          // Verificar se e-mail já existe
+          var exists = usersList.some(function(u) {
+            return u.email && u.email.toLowerCase() === emailVal.toLowerCase();
+          });
+
+          if (exists) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<span>Cadastrar</span>';
+            showAlert('Este e-mail já está cadastrado. Tente entrar.', 'error');
+            return;
+          }
+
+          // Adicionar novo usuário
+          usersList.push({
+            name: nameVal,
+            email: emailVal,
+            pass: passVal,
+            created: Date.now()
+          });
+
+          safeSet('ecoera_users', JSON.stringify(usersList));
+
+          // Criar sessão automática
+          var sessionData = JSON.stringify({
+            email: emailVal,
+            name: nameVal,
+            active: true,
+            timestamp: Date.now()
+          });
+          safeSet('ecoera_session', sessionData);
+
+          showAlert('Conta criada com sucesso! Redirecionando...', 'success');
+
+          // Redireciona para a página inicial após 1 segundo
+          setTimeout(function() {
+            window.location.href = 'inicial.html';
+          }, 1000);
+
+        }, 1000);
+      });
+    })();
+  </script>
+</body>
+</html>

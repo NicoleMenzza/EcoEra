@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoEra - Trocas Sustentáveis</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Arquivo CSS Externo -->
+    <link rel="stylesheet" href="explorar.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'eco-green': '#445b2d',
+                        'eco-hover': '#2d6a4f',
+                        'eco-light': '#d8f3dc',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-['Inter'] antialiased">
+
+    <!-- Cabeçalho Principal com Imagem de Fundo e Superposição -->
+   <!-- Cabeçalho Principal com Imagem de Fundo e Superposição -->
+   <!-- Cabeçalho Principal com Imagem de Fundo e Superposição -->
+   <header class="relative bg-cover bg-center text-white shadow-lg sticky top-0 z-30" 
+        style="background-image: url('images/faixa.png');">
+    
+    <!-- Overlay bem mais leve (20% de opacidade) para não apagar a imagem -->
+    <div class="absolute inset-0 bg-black/20"></div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex justify-end items-center">
+        <nav class="flex items-center gap-2 sm:gap-3 text-sm font-medium">
+            <!-- Botão Sobre Nós (Redireciona para sobre.html) -->
+            <a href="sobre.html" class="px-4 py-2 rounded-xl bg-black/20 backdrop-blur-md text-white border border-white/10 flex items-center gap-2 transition hover:bg-white/20">
+                <i class="fa-solid fa-circle-info"></i> Sobre Nós
+            </a>
+            
+            <!-- Botão EcoPontos (Redireciona para mapa.html) -->
+            <a href="mapa.html" class="px-4 py-2 rounded-xl bg-black/20 backdrop-blur-md text-white border border-white/10 flex items-center gap-2 transition hover:bg-white/20">
+                <i class="fa-solid fa-map-location-dot"></i> EcoPontos
+            </a>
+
+            <!-- Botões Existentes (Abas internas) -->
+            <button onclick="switchTab('explore')" id="nav-explore" class="px-4 py-2 rounded-xl bg-white/20 backdrop-blur-md text-white border border-white/20 flex items-center gap-2 transition hover:bg-white/30 shadow-sm">
+                <i class="fa-solid fa-store"></i> Explore
+            </button>
+            <button onclick="switchTab('my-listings')" id="nav-my-listings" class="px-4 py-2 rounded-xl bg-black/20 backdrop-blur-md text-white border border-white/10 flex items-center gap-2 transition hover:bg-white/20">
+                <i class="fa-solid fa-boxes-packing"></i> Minhas Trocas
+            </button>
+            <button onclick="openNewListingModal()" class="px-4.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold shadow-md hover:shadow-lg flex items-center gap-2 transition transform active:scale-95">
+                <i class="fa-solid fa-plus"></i> Criar Anúncio
+            </button>
+        </nav>
+    </div>
+</header>
+
+    <!-- Conteúdo Principal -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+
+        <!-- Seção: Explora itens (Listagem Geral) -->
+        <section id="tab-explore" class="space-y-6">
+            <!-- Banner Informativo -->
+            <div class="bg-eco-green text-white rounded-2xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-md border border-emerald-800">
+    <div class="space-y-2 text-center md:text-left">
+        <h2 class="text-2xl font-bold flex items-center justify-center md:justify-start gap-2.5">
+            <i class="fa-solid fa-leaf text-emerald-400"></i> Troque, Reutilize e Economize!
+        </h2>
+        <p class="text-emerald-100/90 text-sm max-w-2xl leading-relaxed">
+            Dê uma nova vida a itens que você não usa mais. Publique o que deseja trocar e faça propostas diretas em itens de outros usuários!
+        </p>
+    </div>
+    <button onclick="openNewListingModal()" class="whitespace-nowrap px-6 py-3 bg-white text-eco-green font-semibold rounded-xl hover:bg-emerald-50 shadow-md transition transform active:scale-95">
+        Cadastrar Item
+    </button>
+</div>
+                    </h2>
+                    <p class="text-emerald-100/90 text-sm max-w-2xl leading-relaxed">
+                        Dê uma nova vida a itens que você não usa mais. Publique o que deseja trocar e faça propostas diretas em itens de outros usuários!
+                    </p>
+                </div>
+            </div>
+
+            <!-- Filtros de Busca e Categoria -->
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200/80 flex flex-col sm:flex-row gap-4 items-center justify-between">
+                <div class="relative w-full sm:w-96">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400"></i>
+                    <input type="text" id="searchInput" oninput="renderListings()" placeholder="Buscar título ou descrição..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-eco-green text-sm transition">
+                </div>
+
+                <div class="flex items-center gap-3 w-full sm:w-auto overflow-x-auto">
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider whitespace-nowrap">Categoria:</span>
+                    <select id="categoryFilter" onchange="renderListings()" class="py-2.5 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-eco-green transition">
+                        <option value="ALL">Todas as Categorias</option>
+                        <option value="Roupas & Acessórios">Roupas & Acessórios</option>
+                        <option value="Eletrônicos">Eletrônicos</option>
+                        <option value="Livros & Educação">Livros & Educação</option>
+                        <option value="Brinquedos & Jogos">Brinquedos & Jogos</option>
+                        <option value="Móveis & Decoração">Móveis & Decoração</option>
+                        <option value="Outros">Outros</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Grid de Itens -->
+            <div id="exploreGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+        </section>
+
+        <!-- Seção: Minhas Trocas -->
+        <section id="tab-my-listings" class="space-y-6 hidden">
+            <div class="flex justify-between items-center border-b border-slate-200 pb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">Seus Anúncios Publicados</h2>
+                    <p class="text-slate-500 text-sm mt-1">Gerencie seus itens cadastrados, edite detalhes ou responda ofertas de troca.</p>
+                </div>
+                <button onclick="openNewListingModal()" class="px-4 py-2.5 bg-eco-green text-white text-sm font-semibold rounded-xl hover:bg-eco-hover transition flex items-center gap-2 shadow-sm">
+                    <i class="fa-solid fa-plus"></i> Novo Item
+                </button>
+            </div>
+
+            <div id="myListingsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </section>
+
+    </main>
+
+    <!-- MODAL 1: Form de Cadastro/Edição -->
+    <div id="itemModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-100">
+            <div class="bg-eco-green text-white p-5 px-6 flex justify-between items-center">
+                <h3 id="modalTitle" class="text-lg font-bold">Cadastrar Novo Item</h3>
+                <button onclick="closeModal('itemModal')" class="text-emerald-200 hover:text-white text-2xl font-bold">&times;</button>
+            </div>
+            
+            <form id="itemForm" onsubmit="saveListing(event)" class="p-6 space-y-4">
+                <input type="hidden" id="itemId">
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Título do Item *</label>
+                    <input type="text" id="itemTitle" required placeholder="Ex: Bicicleta Aro 26, Livro de Cálculo" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-eco-green outline-none transition">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Categoria *</label>
+                        <select id="itemCategory" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-eco-green outline-none transition">
+                            <option value="Roupas & Acessórios">Roupas & Acessórios</option>
+                            <option value="Eletrônicos">Eletrônicos</option>
+                            <option value="Livros & Educação">Livros & Educação</option>
+                            <option value="Brinquedos & Jogos">Brinquedos & Jogos</option>
+                            <option value="Móveis & Decoração">Móveis & Decoração</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Estado / Condição *</label>
+                        <select id="itemCondition" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-eco-green outline-none transition">
+                            <option value="Novo / Sem Uso">Novo / Sem Uso</option>
+                            <option value="Seminovo (Ótimo estado)">Seminovo (Ótimo estado)</option>
+                            <option value="Usado (Bom estado)">Usado (Bom estado)</option>
+                            <option value="Com marcas de uso">Com marcas de uso</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Descrição do Produto *</label>
+                    <textarea id="itemDescription" required rows="3" placeholder="Descreva os detalhes e o motivo da troca..." class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-eco-green outline-none transition"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">O que aceita em troca? *</label>
+                    <input type="text" id="itemLookingFor" required placeholder="Ex: Aceito tênis tamanho 40 ou livros" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-eco-green outline-none transition">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Seu Nome / Apelido *</label>
+                        <input type="text" id="itemOwner" required placeholder="Ex: Maria Silva" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-eco-green outline-none transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Contato (WhatsApp/Email) *</label>
+                        <input type="text" id="itemContact" required placeholder="Ex: (11) 99999-9999" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-eco-green outline-none transition">
+                    </div>
+                </div>
+
+                <div class="pt-4 flex justify-end gap-3 border-t border-slate-100">
+                    <button type="button" onclick="closeModal('itemModal')" class="px-4 py-2 border border-slate-200 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">Cancelar</button>
+                    <button type="submit" class="px-5 py-2 bg-eco-green hover:bg-eco-hover text-white rounded-xl text-sm font-semibold shadow-md transition">Salvar Anúncio</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 2: Ver Detalhes & Propor Troca -->
+    <div id="detailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-slate-100">
+            <div id="detailContent"></div>
+        </div>
+    </div>
+
+    <!-- Script com lógica completa -->
+    <script>
+        const STORAGE_KEY = 'ecotroca_items_v1';
+
+        const INITIAL_DATA = [
+            {
+                id: '1',
+                title: 'Bicicleta Mountain Bike Aro 26',
+                category: 'Outros',
+                condition: 'Usado (Bom estado)',
+                description: 'Bicicleta em bom estado de conservação, precisa apenas de ajuste nos freios. Usava para ir até a escola.',
+                lookingFor: 'Aceito Tablet básico, Smartphone antigo funcionando ou Livros didáticos do 3º ano.',
+                ownerName: 'Carlos Eduardo',
+                contact: '(11) 98765-4321',
+                createdAt: new Date().toISOString(),
+                offers: [
+                    {
+                        id: 'off-101',
+                        offeredItem: 'Ofereço 1 Kit de livros de literatura escolar + Fone Bluetooth sem fio.',
+                        proposerName: 'Ana Beatriz',
+                        proposerContact: 'ana.beatriz@email.com',
+                        createdAt: new Date().toISOString()
+                    }
+                ]
+            },
+            {
+                id: '2',
+                title: 'Casaco de Frio Sobretudo Preto',
+                category: 'Roupas & Acessórios',
+                condition: 'Seminovo (Ótimo estado)',
+                description: 'Usado pouquíssimas vezes. Tamanho M, tecido bem quente para o inverno.',
+                lookingFor: 'Troco por Mochila reforçada de costas ou Tênis tamanho 38.',
+                ownerName: 'Mariana Lima',
+                contact: 'mari.lima@gmail.com',
+                createdAt: new Date().toISOString(),
+                offers: []
+            }
+        ];
+
+        let items = [];
+
+        function loadData() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            if (data) {
+                try {
+                    items = JSON.parse(data);
+                } catch (e) {
+                    items = INITIAL_DATA;
+                }
+            } else {
+                items = INITIAL_DATA;
+                saveData();
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>"']/g, function(m) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+            });
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+        }
+
+        function switchTab(tabName) {
+            const exploreTab = document.getElementById('tab-explore');
+            const myTab = document.getElementById('tab-my-listings');
+            const navExplore = document.getElementById('nav-explore');
+            const navMy = document.getElementById('nav-my-listings');
+
+            if (tabName === 'explore') {
+                exploreTab.classList.remove('hidden');
+                myTab.classList.add('hidden');
+                navExplore.className = "px-4 py-2 rounded-xl bg-white/20 backdrop-blur-md text-white border border-white/20 flex items-center gap-2 transition hover:bg-white/30 shadow-sm";
+                navMy.className = "px-4 py-2 rounded-xl bg-black/20 backdrop-blur-md text-white border border-white/10 flex items-center gap-2 transition hover:bg-white/20";
+            } else {
+                exploreTab.classList.add('hidden');
+                myTab.classList.remove('hidden');
+                navMy.className = "px-4 py-2 rounded-xl bg-white/20 backdrop-blur-md text-white border border-white/20 flex items-center gap-2 transition hover:bg-white/30 shadow-sm";
+                navExplore.className = "px-4 py-2 rounded-xl bg-black/20 backdrop-blur-md text-white border border-white/10 flex items-center gap-2 transition hover:bg-white/20";
+            }
+            renderListings();
+        }
+
+        function renderListings() {
+            const exploreGrid = document.getElementById('exploreGrid');
+            const myListingsGrid = document.getElementById('myListingsGrid');
+
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+
+            const filteredItems = items.filter(item => {
+                const matchesSearch = item.title.toLowerCase().includes(searchTerm) || 
+                                      item.description.toLowerCase().includes(searchTerm);
+                const matchesCategory = categoryFilter === 'ALL' || item.category === categoryFilter;
+                return matchesSearch && matchesCategory;
+            });
+
+            if (filteredItems.length === 0) {
+                exploreGrid.innerHTML = `
+                    <div class="col-span-full py-16 text-center text-slate-400">
+                        <i class="fa-solid fa-box-open text-5xl mb-3 opacity-60"></i>
+                        <p class="text-base font-medium">Nenhum item encontrado.</p>
+                    </div>`;
+            } else {
+                exploreGrid.innerHTML = filteredItems.map(item => `
+                    <div class="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
+                        <div class="p-5 space-y-3">
+                            <div class="flex justify-between items-start gap-2">
+                                <span class="px-2.5 py-1 bg-emerald-50 text-eco-green text-xs font-bold rounded-lg border border-emerald-100/80">
+                                    ${escapeHtml(item.category)}
+                                </span>
+                                <span class="text-[11px] text-slate-400 font-medium">
+                                    <i class="fa-regular fa-clock"></i> ${new Date(item.createdAt).toLocaleDateString('pt-BR')}
+                                </span>
+                            </div>
+
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-lg leading-snug group-hover:text-eco-green transition cursor-pointer" onclick="openDetailModal('${item.id}')">
+                                    ${escapeHtml(item.title)}
+                                </h3>
+                                <p class="text-xs text-slate-500 font-medium mt-1">Anunciado por: <span class="text-slate-700 font-semibold">${escapeHtml(item.ownerName)}</span></p>
+                            </div>
+
+                            <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed">
+                                ${escapeHtml(item.description)}
+                            </p>
+
+                            <div class="bg-amber-50/90 border border-amber-200/70 p-3 rounded-xl text-xs space-y-1">
+                                <span class="font-bold text-amber-900 block flex items-center gap-1.5">
+                                    <i class="fa-solid fa-handshake text-amber-600"></i> Deseja em troca:
+                                </span>
+                                <span class="text-amber-800/90 leading-normal block">${escapeHtml(item.lookingFor)}</span>
+                            </div>
+                        </div>
+
+                        <div class="px-5 py-3.5 bg-slate-50/80 border-t border-slate-100 flex items-center justify-between">
+                            <span class="text-xs font-semibold text-slate-500">
+                                <i class="fa-solid fa-comments text-eco-green"></i> ${item.offers ? item.offers.length : 0} oferta(s)
+                            </span>
+                            <button onclick="openDetailModal('${item.id}')" class="px-3.5 py-1.5 bg-eco-green hover:bg-eco-hover text-white rounded-xl text-xs font-semibold shadow-sm transition transform active:scale-95">
+                                Ver & Propor
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            myListingsGrid.innerHTML = items.map(item => `
+                <div class="bg-white rounded-2xl border border-slate-200 p-5 space-y-4 shadow-sm">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs text-eco-green font-bold bg-emerald-50 px-2.5 py-0.5 rounded-lg">${escapeHtml(item.category)}</span>
+                            <h3 class="font-bold text-slate-800 text-base mt-2">${escapeHtml(item.title)}</h3>
+                        </div>
+                        <div class="flex gap-1">
+                            <button onclick="openEditListingModal('${item.id}')" title="Editar" class="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button onclick="deleteListing('${item.id}')" title="Excluir" class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="text-xs text-slate-600 space-y-1 bg-slate-50 p-3 rounded-xl">
+                        <p><strong>Condição:</strong> ${escapeHtml(item.condition)}</p>
+                        <p><strong>Aceita trocar por:</strong> ${escapeHtml(item.lookingFor)}</p>
+                    </div>
+
+                    <div class="border-t border-slate-100 pt-3">
+                        <h4 class="text-xs font-bold text-slate-700 mb-2">Ofertas Recebidas (${item.offers ? item.offers.length : 0})</h4>
+
+                        ${(!item.offers || item.offers.length === 0) 
+                            ? `<p class="text-xs text-slate-400 italic">Nenhuma oferta recebida ainda.</p>`
+                            : `<div class="space-y-2 max-h-40 overflow-y-auto pr-1">
+                                ${item.offers.map(off => `
+                                    <div class="bg-slate-50 border border-slate-200/80 p-3 rounded-xl text-xs space-y-1">
+                                        <div class="flex justify-between font-bold text-slate-700">
+                                            <span>${escapeHtml(off.proposerName)}</span>
+                                            <button onclick="deleteOffer('${item.id}', '${off.id}')" class="text-red-500 hover:underline text-[10px]">Remover</button>
+                                        </div>
+                                        <p class="text-slate-600">"${escapeHtml(off.offeredItem)}"</p>
+                                        <p class="text-[11px] text-eco-green font-semibold pt-0.5">Contato: ${escapeHtml(off.proposerContact)}</p>
+                                    </div>
+                                `).join('')}
+                              </div>`
+                        }
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openNewListingModal() {
+            document.getElementById('itemForm').reset();
+            document.getElementById('itemId').value = '';
+            document.getElementById('modalTitle').innerText = 'Cadastrar Novo Item';
+            openModal('itemModal');
+        }
+
+        function openEditListingModal(id) {
+            const item = items.find(i => i.id === id);
+            if (!item) return;
+
+            document.getElementById('itemId').value = item.id;
+            document.getElementById('itemTitle').value = item.title;
+            document.getElementById('itemCategory').value = item.category;
+            document.getElementById('itemCondition').value = item.condition;
+            document.getElementById('itemDescription').value = item.description;
+            document.getElementById('itemLookingFor').value = item.lookingFor;
+            document.getElementById('itemOwner').value = item.ownerName;
+            document.getElementById('itemContact').value = item.contact;
+
+            document.getElementById('modalTitle').innerText = 'Editar Anúncio de Troca';
+            openModal('itemModal');
+        }
+
+        function saveListing(event) {
+            event.preventDefault();
+
+            const id = document.getElementById('itemId').value;
+            const title = document.getElementById('itemTitle').value;
+            const category = document.getElementById('itemCategory').value;
+            const condition = document.getElementById('itemCondition').value;
+            const description = document.getElementById('itemDescription').value;
+            const lookingFor = document.getElementById('itemLookingFor').value;
+            const ownerName = document.getElementById('itemOwner').value;
+            const contact = document.getElementById('itemContact').value;
+
+            if (id) {
+                const index = items.findIndex(i => i.id === id);
+                if (index !== -1) {
+                    items[index] = { ...items[index], title, category, condition, description, lookingFor, ownerName, contact };
+                }
+            } else {
+                const newItem = {
+                    id: Date.now().toString(),
+                    title, category, condition, description, lookingFor, ownerName, contact,
+                    createdAt: new Date().toISOString(),
+                    offers: []
+                };
+                items.unshift(newItem);
+            }
+
+            saveData();
+            closeModal('itemModal');
+            renderListings();
+        }
+
+        function deleteListing(id) {
+            if (confirm('Tem certeza que deseja remover este anúncio?')) {
+                items = items.filter(i => i.id !== id);
+                saveData();
+                renderListings();
+            }
+        }
+
+        function deleteOffer(itemId, offerId) {
+            const item = items.find(i => i.id === itemId);
+            if (!item) return;
+
+            item.offers = item.offers.filter(o => o.id !== offerId);
+            saveData();
+            renderListings();
+        }
+
+        function openDetailModal(id) {
+            const item = items.find(i => i.id === id);
+            if (!item) return;
+
+            const content = document.getElementById('detailContent');
+            content.innerHTML = `
+                <div class="bg-eco-green text-white p-6 flex justify-between items-start">
+                    <div>
+                        <span class="text-xs bg-white/20 px-3 py-1 rounded-lg font-semibold border border-white/10">${escapeHtml(item.category)}</span>
+                        <h2 class="text-2xl font-bold mt-3">${escapeHtml(item.title)}</h2>
+                        <p class="text-xs text-emerald-100 mt-1">Anunciado por ${escapeHtml(item.ownerName)}</p>
+                    </div>
+                    <button onclick="closeModal('detailModal')" class="text-white hover:text-emerald-200 text-2xl font-bold">&times;</button>
+                </div>
+
+                <div class="p-6 space-y-6">
+                    <div class="space-y-2">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Detalhes do Item</h4>
+                        <p class="text-sm text-slate-700 leading-relaxed">${escapeHtml(item.description)}</p>
+                        <p class="text-xs text-slate-500 font-medium pt-1"><strong>Condição:</strong> ${escapeHtml(item.condition)}</p>
+                    </div>
+
+                    <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl space-y-1">
+                        <h4 class="text-xs font-bold text-amber-900 uppercase tracking-wider">O que o anunciante procura:</h4>
+                        <p class="text-sm text-amber-800 font-medium">${escapeHtml(item.lookingFor)}</p>
+                    </div>
+
+                    <form onsubmit="submitOffer(event, '${item.id}')" class="border-t border-slate-200 pt-5 space-y-4">
+                        <h4 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-paper-plane text-eco-green"></i> Faça uma proposta de troca
+                        </h4>
+                        
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">O que você oferece em troca? *</label>
+                            <input type="text" id="offerItem" required placeholder="Ex: Ofereço uma mochila de costas nova" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-eco-green outline-none transition">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Seu Nome *</label>
+                                <input type="text" id="offerName" required placeholder="Seu nome" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-eco-green outline-none transition">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Seu Contato *</label>
+                                <input type="text" id="offerContact" required placeholder="WhatsApp ou E-mail" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-eco-green outline-none transition">
+                            </div>
+                        </div>
+
+                        <div class="pt-2 flex justify-end">
+                            <button type="submit" class="px-5 py-2.5 bg-eco-green hover:bg-eco-hover text-white text-sm font-semibold rounded-xl shadow-md transition">
+                                Enviar Proposta
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            openModal('detailModal');
+        }
+
+        function submitOffer(event, itemId) {
+            event.preventDefault();
+            const item = items.find(i => i.id === itemId);
+            if (!item) return;
+
+            const offeredItem = document.getElementById('offerItem').value;
+            const proposerName = document.getElementById('offerName').value;
+            const proposerContact = document.getElementById('offerContact').value;
+
+            if (!item.offers) item.offers = [];
+
+            item.offers.unshift({
+                id: 'off-' + Date.now(),
+                offeredItem,
+                proposerName,
+                proposerContact,
+                createdAt: new Date().toISOString()
+            });
+
+            saveData();
+            closeModal('detailModal');
+            renderListings();
+            alert('Sua proposta foi enviada com sucesso ao anunciante!');
+        }
+
+        // Inicializar aplicação
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            renderListings();
+        });
+    </script>
+</body>
+</html>

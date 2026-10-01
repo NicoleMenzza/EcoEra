@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoEra — Mapa</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basecoat-css@1.0.2/dist/basecoat.cdn.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <style>
+/* Skip artifact shell — fixed styles served beside every artifact.
+   Complements basecoat; artifacts override --accent for their own identity. */
+:root {
+  color-scheme: light dark;
+  --accent: #2563eb;
+  --accent-contrast: #ffffff;
+  --accent-text: color-mix(in srgb, var(--accent) 72%, #000);
+  --bg: #f8f9fb;
+  --surface: #ffffff;
+  --text: #14171f;
+  --text-muted: #5b6472;
+  --border: rgba(20, 23, 31, 0.10);
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(20, 23, 31, 0.08);
+  --space: 16px;
+}
+/* Theme resolution. Without data-theme the viewer's system preference decides,
+   as it always did. With it, the artifact's own choice wins in BOTH directions:
+   a page that hardcodes one palette must not be handed the opposite set of
+   tokens by the machine it happens to be opened on. The dark values appear
+   twice because a media query cannot be folded into a selector list.
+   The attribute sits inside :where() so these blocks keep the specificity of a
+   bare :root — the page's own <style> is linked after this file and must go on
+   overriding any token it wants, exactly as it could before. */
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    --accent-text: color-mix(in srgb, var(--accent) 78%, #fff);
+    --bg: #101318;
+    --surface: #181c23;
+    --text: #eef1f6;
+    --text-muted: #9aa4b2;
+    --border: rgba(238, 241, 246, 0.12);
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  }
+}
+:root:where([data-theme="dark"]) {
+  color-scheme: dark;
+  --accent-text: color-mix(in srgb, var(--accent) 78%, #fff);
+  --bg: #101318;
+  --surface: #181c23;
+  --text: #eef1f6;
+  --text-muted: #9aa4b2;
+  --border: rgba(238, 241, 246, 0.12);
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+:root:where([data-theme="light"]) { color-scheme: light; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+
+.shell-container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+.shell-section { padding: calc(var(--space) * 2) 0; }
+.shell-grid { display: grid; gap: var(--space); grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.shell-toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: var(--space); }
+.shell-footer { padding: 24px 0 40px; color: var(--text-muted); font-size: 13px; }
+
+.shell-hero { padding: calc(var(--space) * 3) 0 calc(var(--space) * 2); }
+.shell-hero h1 { font-size: clamp(26px, 4vw, 40px); line-height: 1.15; margin: 0 0 10px; text-wrap: balance; }
+.shell-hero p { color: var(--text-muted); max-width: 60ch; margin: 0; }
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: var(--space);
+}
+
+.kpi { display: flex; flex-direction: column; gap: 4px; }
+.kpi .kpi-value { font-size: 28px; font-weight: 650; line-height: 1.1; }
+.kpi .kpi-label { font-size: 13px; color: var(--text-muted); }
+.kpi .kpi-delta { font-size: 12.5px; font-weight: 600; }
+.kpi .kpi-delta.up { color: #0a8f3c; }
+.kpi .kpi-delta.down { color: #cf3131; }
+
+table.shell-table { border-collapse: collapse; width: 100%; font-size: 14px; }
+table.shell-table th {
+  text-align: left; font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--text-muted); font-weight: 600;
+}
+table.shell-table th, table.shell-table td { padding: 9px 12px 9px 0; border-bottom: 1px solid var(--border); }
+table.shell-table td.num, table.shell-table th.num { text-align: right; font-variant-numeric: tabular-nums; }
+table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 6%, transparent); }
+
+.chart-box { width: 100%; min-height: 220px; }
+.chart-box svg { width: 100%; height: auto; display: block; }
+
+.muted { color: var(--text-muted); }
+.accent { color: var(--accent-text); }
+.shell-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent-text);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .shell-fade { animation: shell-fade 400ms ease both; }
+  @keyframes shell-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+}
+
+</style>
+  
+
+  <style>
+    :root {
+      --accent: #2D6A4F;
+      --accent-text: #1A3D2F;
+      --accent-contrast: #FFFFFF;
+      --bg: #F8FCFA;
+      --surface: #FFFFFF;
+      --text: #1A3D2F;
+      --text-muted: #52796F;
+      --border: #D8E6E0;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      scroll-behavior: smooth;
+    }
+
+    /* Custom Green Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #E8F3EE;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #52B788;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #2D6A4F;
+    }
+
+    /* Navbar */
+    .eco-navbar {
+      background-color: #2D6A4F;
+      color: #FFFFFF;
+      height: 64px;
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .eco-nav-left {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .eco-logo {
+      height: 42px;
+      display: block;
+      border: none;
+      object-fit: contain;
+    }
+
+    .eco-menu {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .eco-menu-item {
+      color: rgba(255, 255, 255, 0.88);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      padding: 0.45rem 0.85rem;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .eco-menu-item:hover {
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .eco-menu-item.active {
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.22);
+      font-weight: 600;
+    }
+
+    .eco-nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .eco-user-tag {
+      font-size: 0.9rem;
+      color: #E8F5E9;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-logout {
+      background: rgba(255, 255, 255, 0.12);
+      color: #FFFFFF;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 6px;
+      padding: 0.4rem 0.85rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-logout:hover {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Hero */
+    .eco-hero {
+      text-align: center;
+      padding: 2.25rem 1rem 1.25rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .eco-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #E8F5E9;
+      color: #1A3D2F;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.35rem 0.9rem;
+      border-radius: 50px;
+      border: 1px solid #B7E4C7;
+      margin-bottom: 0.85rem;
+    }
+
+    .eco-hero h1 {
+      font-size: clamp(1.6rem, 3.8vw, 2.4rem);
+      font-weight: 800;
+      color: #1A3D2F;
+      margin: 0 0 1.1rem;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+    }
+
+    .gradient-text {
+      color: #2D6A4F;
+      background: linear-gradient(135deg, #2D6A4F 0%, #52B788 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .btn-location {
+      background-color: #2D6A4F;
+      color: #FFFFFF;
+      border: none;
+      padding: 0.7rem 1.5rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: 30px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 14px rgba(45, 106, 79, 0.25);
+      transition: all 0.2s ease;
+    }
+
+    .btn-location:hover {
+      background-color: #1A3D2F;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(45, 106, 79, 0.35);
+    }
+
+    /* Main Area */
+    .eco-main-container {
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 1rem 3rem;
+      flex: 1;
+    }
+
+    /* Filters */
+    .eco-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+    }
+
+    .filter-pill {
+      background: #FFFFFF;
+      color: #2D6A4F;
+      border: 1.5px solid #D8E6E0;
+      padding: 0.45rem 1.15rem;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    .filter-pill:hover {
+      border-color: #52B788;
+      background: #F0F7F4;
+    }
+
+    .filter-pill.active {
+      background: #2D6A4F;
+      color: #FFFFFF;
+      border-color: #2D6A4F;
+      box-shadow: 0 3px 10px rgba(45, 106, 79, 0.2);
+    }
+
+    /* Map Box */
+    .eco-map-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      min-height: 380px;
+      background: #EAF4EE;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 12px 32px rgba(26, 61, 47, 0.08);
+      border: 1px solid #D0E4DA;
+      margin-bottom: 1.5rem;
+    }
+
+    .eco-map-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .eco-map-watermark {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #52796F;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.3rem 0.65rem;
+      border-radius: 6px;
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(216, 230, 224, 0.8);
+      pointer-events: none;
+    }
+
+    .eco-map-legend {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      background: rgba(255, 255, 255, 0.92);
+      padding: 0.45rem 0.85rem;
+      border-radius: 8px;
+      display: flex;
+      gap: 1rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #1A3D2F;
+      border: 1px solid rgba(216, 230, 224, 0.8);
+      backdrop-filter: blur(4px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    /* Pins Overlay */
+    .pin-marker {
+      position: absolute;
+      transform: translate(-50%, -100%);
+      cursor: pointer;
+      z-index: 10;
+      transition: opacity 0.3s ease, transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .pin-marker.hidden-pin {
+      opacity: 0.18;
+      pointer-events: none;
+    }
+
+    .pin-svg {
+      width: 32px;
+      height: 40px;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.22));
+      transition: transform 0.2s ease;
+    }
+
+    .pin-marker:hover .pin-svg, .pin-marker.selected .pin-svg {
+      transform: scale(1.25);
+    }
+
+    .pin-marker.selected {
+      z-index: 25;
+    }
+
+    .pin-pulse {
+      position: absolute;
+      top: 24px;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 18px;
+      height: 18px;
+      background: rgba(45, 106, 79, 0.45);
+      border-radius: 50%;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .pin-marker.selected .pin-pulse {
+      animation: pulse-ring 1.8s infinite;
+    }
+
+    @keyframes pulse-ring {
+      0% { transform: translate(-50%, -50%) scale(0.6); opacity: 0.85; }
+      100% { transform: translate(-50%, -50%) scale(3); opacity: 0; }
+    }
+
+    /* User Pin Marker */
+    .user-pin-marker {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    .user-pin-dot {
+      width: 18px;
+      height: 18px;
+      background: #0077B6;
+      border: 3px solid #FFFFFF;
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .user-pulse-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 42px;
+      height: 42px;
+      background: rgba(0, 119, 182, 0.25);
+      border-radius: 50%;
+      animation: user-pulse 2s infinite;
+    }
+
+    @keyframes user-pulse {
+      0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0.9; }
+      100% { transform: translate(-50%, -50%) scale(2.2); opacity: 0; }
+    }
+
+    /* Closest Banner */
+    .closest-banner {
+      background: #E8F5E9;
+      border-left: 5px solid #2D6A4F;
+      border-radius: 12px;
+      padding: 0.9rem 1.25rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      box-shadow: 0 4px 12px rgba(45, 106, 79, 0.08);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .closest-title {
+      font-size: 0.95rem;
+      color: #1A3D2F;
+      margin: 0;
+    }
+
+    .closest-name {
+      font-weight: 700;
+      color: #2D6A4F;
+    }
+
+    .closest-dist {
+      background: #2D6A4F;
+      color: #FFFFFF;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    /* Details Panel */
+    .eco-detail-panel {
+      background: #FFFFFF;
+      border-radius: 16px;
+      border: 1px solid #D8E6E0;
+      border-left: 6px solid #2D6A4F;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 8px 24px rgba(26, 61, 47, 0.06);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .detail-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .detail-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #1A3D2F;
+      margin: 0 0 0.35rem;
+    }
+
+    .detail-bairro-badge {
+      display: inline-block;
+      background: #E8F5E9;
+      color: #2D6A4F;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.2rem 0.65rem;
+      border-radius: 6px;
+    }
+
+    .btn-close-detail {
+      background: #F0F4F2;
+      border: none;
+      color: #52796F;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      font-weight: 700;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .btn-close-detail:hover {
+      background: #E0EAE5;
+      color: #1A3D2F;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .detail-info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .detail-info-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #52796F;
+    }
+
+    .detail-info-val {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: #1A3D2F;
+    }
+
+    .materials-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.25rem;
+    }
+
+    .mat-pill {
+      background: #E8F5E9;
+      color: #1A3D2F;
+      border: 1px solid #B7E4C7;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.25rem 0.65rem;
+      border-radius: 20px;
+    }
+
+    .eco-cta-box {
+      margin-top: 1.25rem;
+      padding-top: 1rem;
+      border-top: 1px solid #E8F3EE;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .cta-label-btn {
+      background: #2D6A4F;
+      color: #FFFFFF;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 30px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      border: none;
+    }
+
+    /* List Cards Section */
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #1A3D2F;
+      margin: 0 0 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      gap: 1rem;
+    }
+
+    .point-card {
+      background: #FFFFFF;
+      border: 1.5px solid #D8E6E0;
+      border-radius: 12px;
+      padding: 1.1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 0.85rem;
+    }
+
+    .point-card:hover {
+      border-color: #52B788;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(26, 61, 47, 0.08);
+    }
+
+    .point-card.selected {
+      border-color: #2D6A4F;
+      background: #F4FAF7;
+      box-shadow: 0 4px 14px rgba(45, 106, 79, 0.12);
+    }
+
+    .point-card.hidden-card {
+      display: none;
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #1A3D2F;
+      margin: 0;
+    }
+
+    .card-bairro {
+      font-size: 0.8rem;
+      color: #52796F;
+      font-weight: 500;
+      margin-top: 0.2rem;
+    }
+
+    /* Footer */
+    .eco-footer {
+      background: #1A3D2F;
+      color: #95D5B2;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      font-size: 0.9rem;
+      border-top: 1px solid #2D6A4F;
+      margin-top: auto;
+    }
+
+    .footer-content {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .footer-copyright {
+      color: #D8E6E0;
+      font-weight: 500;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .footer-links a {
+      color: #95D5B2;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+
+    .footer-links a:hover {
+      color: #FFFFFF;
+      text-decoration: underline;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 640px) {
+      .eco-navbar {
+        padding: 0 1rem;
+      }
+      .eco-menu {
+        display: none;
+      }
+      .eco-map-wrapper {
+        aspect-ratio: 4 / 3;
+        min-height: 320px;
+      }
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="eco-navbar">
+    <div class="eco-nav-left">
+      <a href="inicial.html">
+        <img 
+          src="https://generated-images.adapta.one/dias21biel%40gmail.com/01a0d9a1-b790-73be-87f5-86105a97498b/2026-09-25T17-57-58-944Z_Original_user_intent_Tool_generated_image_directi.png" 
+          alt="ecoera" 
+          class="eco-logo"
+        >
+      </a>
+      <nav>
+        <ul class="eco-menu">
+          <li><a href="inicial.html" class="eco-menu-item">Início</a></li>
+          <li><a href="explorar.html" class="eco-menu-item">Trocas</a></li>
+          <li><a href="inicial.html" class="eco-menu-item active">Mapa</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="eco-nav-right">
+      <span class="eco-user-tag" id="userDisplay">👤 Carregando...</span>
+      <button class="btn-logout" id="btnLogout">Sair</button>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="eco-hero">
+    <div class="eco-badge">
+      🌱 Sustentabilidade • Troca • Mapa
+    </div>
+    <h1>TRANSFORME O DESCARTE EM <span class="gradient-text">OPORTUNIDADE.</span></h1>
+    <button class="btn-location" id="btnLocation">
+      📍 Minha localização
+    </button>
+  </section>
+
+  <!-- Main Content Area -->
+  <main class="eco-main-container">
+
+    <!-- Material Filters -->
+    <div class="eco-filters" id="filtersContainer">
+      <button class="filter-pill active" data-mat="Todos">Todos</button>
+      <button class="filter-pill" data-mat="Papel">Papel</button>
+      <button class="filter-pill" data-mat="Plástico">Plástico</button>
+      <button class="filter-pill" data-mat="Vidro">Vidro</button>
+      <button class="filter-pill" data-mat="Metal">Metal</button>
+      <button class="filter-pill" data-mat="Eletrônicos">Eletrônicos</button>
+    </div>
+
+    <!-- Map Box (Fictional Vila Verde SVG) -->
+    <div class="eco-map-wrapper" id="mapWrapper">
+      <span class="eco-map-watermark">Mapa fictício</span>
+      
+      <div class="eco-map-legend">
+        <span>🍃 Ponto de reciclagem</span>
+        <span>📍 Você</span>
+      </div>
+
+      <!-- Fictional Map SVG -->
+      <svg class="eco-map-svg" viewBox="0 0 1000 625" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="riverGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#90E0EF"/>
+            <stop offset="100%" stop-color="#48CAE4"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Base Background -->
+        <rect width="1000" height="625" fill="#E4F0EC"/>
+
+        <!-- River -->
+        <path d="M -20 180 Q 280 130 450 310 T 1020 490" fill="none" stroke="url(#riverGrad)" stroke-width="36" opacity="0.8"/>
+        <path d="M -20 180 Q 280 130 450 310 T 1020 490" fill="none" stroke="#FFFFFF" stroke-width="4" opacity="0.4"/>
+
+        <!-- Blocks / Neighborhood Parcels -->
+        <!-- Jardim Aurora -->
+        <rect x="50" y="40" width="300" height="150" rx="16" fill="#D2E8DD" opacity="0.8"/>
+        <!-- Parque das Nações -->
+        <rect x="620" y="50" width="320" height="180" rx="16" fill="#D8EAE0" opacity="0.8"/>
+        <!-- Centro -->
+        <rect x="380" y="190" width="220" height="200" rx="16" fill="#CEE5D9" opacity="0.9"/>
+        <!-- Central Park Area -->
+        <rect x="420" y="220" width="140" height="140" rx="20" fill="#B7E4C7"/>
+        <!-- Trees in Central Park -->
+        <circle cx="450" cy="250" r="14" fill="#2D6A4F" opacity="0.85"/>
+        <circle cx="485" cy="240" r="18" fill="#40916C" opacity="0.85"/>
+        <circle cx="525" cy="260" r="15" fill="#2D6A4F" opacity="0.85"/>
+        <circle cx="460" cy="300" r="16" fill="#52B788" opacity="0.85"/>
+        <circle cx="510" cy="310" r="20" fill="#2D6A4F" opacity="0.85"/>
+
+        <!-- Vila Verde -->
+        <rect x="220" y="380" width="220" height="160" rx="16" fill="#D5E8DF" opacity="0.8"/>
+        <!-- Alto das Flores -->
+        <rect x="60" y="480" width="300" height="110" rx="16" fill="#D0E4DA" opacity="0.8"/>
+        <!-- Vila Marista -->
+        <rect x="650" y="420" width="290" height="160" rx="16" fill="#D6EAE0" opacity="0.8"/>
+
+        <!-- Main Grid Roads (White overlay lines) -->
+        <g stroke="#FFFFFF" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" opacity="0.95">
+          <!-- Horizontal Arterials -->
+          <line x1="0" y1="210" x2="1000" y2="210" />
+          <line x1="0" y1="410" x2="1000" y2="410" />
+          <line x1="0" y1="120" x2="600" y2="120" />
+          <line x1="380" y1="550" x2="1000" y2="550" />
+
+          <!-- Vertical Arterials -->
+          <line x1="380" y1="0" x2="380" y2="625" />
+          <line x1="620" y1="0" x2="620" y2="625" />
+          <line x1="180" y1="0" x2="180" y2="625" />
+          <line x1="820" y1="0" x2="820" y2="625" />
+        </g>
+
+        <!-- Neighborhood Name Labels -->
+        <text x="200" y="95" fill="#2D6A4F" font-weight="700" font-size="16" opacity="0.65" text-anchor="middle">Jardim Aurora</text>
+        <text x="780" y="110" fill="#2D6A4F" font-weight="700" font-size="16" opacity="0.65" text-anchor="middle">Parque das Nações</text>
+        <text x="490" y="208" fill="#1A3D2F" font-weight="800" font-size="15" opacity="0.7" text-anchor="middle">Centro</text>
+        <text x="330" y="455" fill="#2D6A4F" font-weight="700" font-size="16" opacity="0.65" text-anchor="middle">Vila Verde</text>
+        <text x="210" y="535" fill="#2D6A4F" font-weight="700" font-size="16" opacity="0.65" text-anchor="middle">Alto das Flores</text>
+        <text x="795" y="500" fill="#2D6A4F" font-weight="700" font-size="16" opacity="0.65" text-anchor="middle">Vila Marista</text>
+      </svg>
+
+      <!-- Pins Container Overlay -->
+      <div id="pinsOverlay"></div>
+
+      <!-- User Location Pin Marker -->
+      <div class="user-pin-marker" id="userPinMarker" style="display: none; left: 48%; top: 52%;">
+        <div class="user-pulse-ring"></div>
+        <div class="user-pin-dot"></div>
+      </div>
+    </div>
+
+    <!-- Closest Point Alert Banner (Appears when location is active) -->
+    <div class="closest-banner" id="closestBanner" style="display: none;">
+      <p class="closest-title">
+        📍 Ponto mais próximo de você: <span class="closest-name" id="closestName">-</span>
+      </p>
+      <span class="closest-dist" id="closestDist">0,00 km</span>
+    </div>
+
+    <!-- Fixed Details Panel Below Map -->
+    <section class="eco-detail-panel" id="detailPanel">
+      <div class="detail-header">
+        <div class="detail-title-area">
+          <h2 class="detail-title" id="panelName">Ecoponto Central Vila Verde</h2>
+          <span class="detail-bairro-badge" id="panelBairro">Centro</span>
+        </div>
+        <button class="btn-close-detail" id="btnCloseDetail" title="Fechar detalhes">×</button>
+      </div>
+
+      <div class="detail-grid">
+        <div class="detail-info-item">
+          <span class="detail-info-label">📍 Localização</span>
+          <span class="detail-info-val" id="panelAddress">Av. das Palmeiras, 450</span>
+        </div>
+        <div class="detail-info-item">
+          <span class="detail-info-label">🕒 Horário de funcionamento</span>
+          <span class="detail-info-val" id="panelHours">Seg-Sáb 08:00 - 18:00</span>
+        </div>
+      </div>
+
+      <div class="detail-info-item">
+        <span class="detail-info-label">♻️ Materiais Aceitos</span>
+        <div class="materials-pills" id="panelMaterials"></div>
+      </div>
+
+      <div class="eco-cta-box">
+        <span class="cta-label-btn">Indo pra lá? Confira o que recicla:</span>
+        <div class="materials-pills" id="panelCtaMaterials"></div>
+      </div>
+    </section>
+
+    <!-- List of 9 Points Section -->
+    <h3 class="section-title">🌱 Pontos de Coleta e Troca</h3>
+    <div class="cards-grid" id="cardsGrid"></div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="eco-footer">
+    <div class="footer-content">
+      <div class="footer-copyright">
+        © 2026 EcoEra — Sustentabilidade . Troca . Mapa
+      </div>
+      <ul class="footer-links">
+        <li><a href="inicial.html">Início</a></li>
+        <li><a href="explorar.html">Trocas</a></li>
+        <li><a href="mapa.html">Mapa</a></li>
+        <li><a href="#">Sobre</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script>
+    // Entry Session Check
+    let currentUser = "Ana Silva";
+    try {
+      const stored = localStorage.getItem("ecoera_user");
+      if (stored && stored.trim().length > 0) {
+        currentUser = stored;
+      } else {
+        localStorage.setItem("ecoera_user", currentUser);
+      }
+    } catch(e) {
+      currentUser = "Ana Silva";
+    }
+
+    document.getElementById("userDisplay").textContent = `👤 ${currentUser}`;
+
+    // Logout Action
+    document.getElementById("btnLogout").addEventListener("click", () => {
+      try {
+        localStorage.removeItem("ecoera_user");
+      } catch(e) {}
+      window.location.href = "cadastro.html";
+    });
+
+    // 9 Fictional Recycling Points Data
+    const ecoPoints = [
+      {
+        id: 1,
+        name: "Ecoponto Central Vila Verde",
+        address: "Av. das Palmeiras, 450",
+        bairro: "Centro",
+        hours: "Seg-Sáb 08:00 - 18:00",
+        materials: ["Papel", "Plástico", "Vidro", "Metal", "Eletrônicos"],
+        x: 48,
+        y: 45
+      },
+      {
+        id: 2,
+        name: "Estação Recicla Aurora",
+        address: "Rua dos Girassóis, 120",
+        bairro: "Jardim Aurora",
+        hours: "Seg-Sex 08:00 - 17:00",
+        materials: ["Papel", "Plástico", "Vidro"],
+        x: 28,
+        y: 26
+      },
+      {
+        id: 3,
+        name: "Ponto Verde Parque",
+        address: "Alameda dos Ipês, 88",
+        bairro: "Parque das Nações",
+        hours: "Seg-Dom 07:00 - 19:00",
+        materials: ["Papel", "Plástico", "Metal"],
+        x: 74,
+        y: 32
+      },
+      {
+        id: 4,
+        name: "Coleta Tech Flores",
+        address: "Rua da Alvorada, 305",
+        bairro: "Alto das Flores",
+        hours: "Ter-Sáb 09:00 - 17:00",
+        materials: ["Eletrônicos", "Metal", "Plástico"],
+        x: 22,
+        y: 68
+      },
+      {
+        id: 5,
+        name: "Ecoponto Marista",
+        address: "Av. Universitária, 1020",
+        bairro: "Vila Marista",
+        hours: "Seg-Sex 08:00 - 18:00, Sáb 08:00 - 12:00",
+        materials: ["Vidro", "Papel", "Plástico", "Metal"],
+        x: 82,
+        y: 72
+      },
+      {
+        id: 6,
+        name: "Reciclagem Vida Verde",
+        address: "Rua das Acácias, 54",
+        bairro: "Vila Verde",
+        hours: "Seg-Sáb 08:00 - 17:30",
+        materials: ["Papel", "Plástico"],
+        x: 36,
+        y: 52
+      },
+      {
+        id: 7,
+        name: "Ponto Eco Aurora Norte",
+        address: "Rua das Bromélias, 210",
+        bairro: "Jardim Aurora",
+        hours: "Seg-Sex 09:00 - 18:00",
+        materials: ["Vidro", "Metal", "Eletrônicos"],
+        x: 18,
+        y: 18
+      },
+      {
+        id: 8,
+        name: "Ecoponto Nações Sul",
+        address: "Av. dos Estados, 990",
+        bairro: "Parque das Nações",
+        hours: "Seg-Sáb 08:00 - 16:00",
+        materials: ["Papel", "Vidro", "Eletrônicos"],
+        x: 84,
+        y: 22
+      },
+      {
+        id: 9,
+        name: "Centro de Descarte Flores Leste",
+        address: "Rua Hortênsias, 412",
+        bairro: "Alto das Flores",
+        hours: "Seg-Sex 08:30 - 17:30",
+        materials: ["Plástico", "Vidro", "Eletrônicos", "Metal"],
+        x: 58,
+        y: 78
+      }
+    ];
+
+    let selectedPointId = 1;
+    let activeFilter = "Todos";
+    let userLocActive = false;
+    const userPos = { x: 48, y: 52 }; // Simulated location in %
+
+    // DOM Elements
+    const pinsOverlay = document.getElementById("pinsOverlay");
+    const cardsGrid = document.getElementById("cardsGrid");
+    const detailPanel = document.getElementById("detailPanel");
+    const userPinMarker = document.getElementById("userPinMarker");
+    const closestBanner = document.getElementById("closestBanner");
+    const closestName = document.getElementById("closestName");
+    const closestDist = document.getElementById("closestDist");
+
+    // Render Map Pins
+    function renderPins() {
+      pinsOverlay.innerHTML = "";
+      ecoPoints.forEach(p => {
+        const pin = document.createElement("div");
+        pin.className = `pin-marker ${p.id === selectedPointId ? 'selected' : ''}`;
+        pin.style.left = `${p.x}%`;
+        pin.style.top = `${p.y}%`;
+        pin.setAttribute("data-id", p.id);
+
+        pin.innerHTML = `
+          <div class="pin-pulse"></div>
+          <svg class="pin-svg" viewBox="0 0 32 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16 0C7.163 0 0 7.163 0 16c0 12 16 26 16 26s16-14 16-26c0-8.837-7.163-16-16-16z" fill="#2D6A4F"/>
+            <path d="M16 7c-3.8 0-6.5 2.7-6.5 6.5 0 5 6.5 10.5 6.5 10.5s6.5-5.5 6.5-10.5c0-3.8-2.7-6.5-6.5-6.5zm-1 9c-1.6-1.1-2.2-2.8-2.2-4 1.7 0 2.8.6 3.8 2.2 0 0 0 0-.6 1.8z" fill="#FFFFFF"/>
+          </svg>
+        `;
+
+        pin.addEventListener("click", () => selectPoint(p.id));
+        pinsOverlay.appendChild(pin);
+      });
+
+      applyFilters();
+    }
+
+    // Render List Cards
+    function renderCards() {
+      cardsGrid.innerHTML = "";
+      ecoPoints.forEach(p => {
+        const card = document.createElement("div");
+        card.className = `point-card ${p.id === selectedPointId ? 'selected' : ''}`;
+        card.setAttribute("data-id", p.id);
+
+        const matPills = p.materials.map(m => `<span class="mat-pill">${m}</span>`).join("");
+
+        card.innerHTML = `
+          <div class="card-top">
+            <div>
+              <h4 class="card-title">${p.name}</h4>
+              <div class="card-bairro">📍 ${p.bairro} — ${p.address}</div>
+            </div>
+          </div>
+          <div class="materials-pills">
+            ${matPills}
+          </div>
+        `;
+
+        card.addEventListener("click", () => {
+          selectPoint(p.id);
+          detailPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+
+        cardsGrid.appendChild(card);
+      });
+
+      applyFilters();
+    }
+
+    // Select Point and update details panel
+    function selectPoint(id) {
+      selectedPointId = id;
+      const point = ecoPoints.find(p => p.id === id);
+      if (!point) return;
+
+      // Update Pin Highlights
+      document.querySelectorAll(".pin-marker").forEach(el => {
+        if (parseInt(el.getAttribute("data-id")) === id) {
+          el.classList.add("selected");
+        } else {
+          el.classList.remove("selected");
+        }
+      });
+
+      // Update Card Highlights
+      document.querySelectorAll(".point-card").forEach(el => {
+        if (parseInt(el.getAttribute("data-id")) === id) {
+          el.classList.add("selected");
+        } else {
+          el.classList.remove("selected");
+        }
+      });
+
+      // Populate Detail Panel
+      document.getElementById("panelName").textContent = point.name;
+      document.getElementById("panelBairro").textContent = point.bairro;
+      document.getElementById("panelAddress").textContent = point.address;
+      document.getElementById("panelHours").textContent = point.hours;
+
+      const matPills = point.materials.map(m => `<span class="mat-pill">${m}</span>`).join("");
+      document.getElementById("panelMaterials").innerHTML = matPills;
+      document.getElementById("panelCtaMaterials").innerHTML = matPills;
+
+      detailPanel.style.display = "block";
+    }
+
+    // Filter Logic
+    function applyFilters() {
+      ecoPoints.forEach(p => {
+        const matches = (activeFilter === "Todos") || p.materials.includes(activeFilter);
+        
+        // Pin
+        const pin = pinsOverlay.querySelector(`[data-id="${p.id}"]`);
+        if (pin) {
+          if (matches) {
+            pin.classList.remove("hidden-pin");
+          } else {
+            pin.classList.add("hidden-pin");
+          }
+        }
+
+        // Card
+        const card = cardsGrid.querySelector(`[data-id="${p.id}"]`);
+        if (card) {
+          if (matches) {
+            card.classList.remove("hidden-card");
+          } else {
+            card.classList.add("hidden-card");
+          }
+        }
+      });
+    }
+
+    // Filter Buttons Listener
+    document.getElementById("filtersContainer").addEventListener("click", (e) => {
+      const btn = e.target.closest(".filter-pill");
+      if (!btn) return;
+
+      document.querySelectorAll(".filter-pill").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      activeFilter = btn.getAttribute("data-mat");
+      applyFilters();
+    });
+
+    // Close Details Panel
+    document.getElementById("btnCloseDetail").addEventListener("click", () => {
+      detailPanel.style.display = "none";
+      document.querySelectorAll(".pin-marker").forEach(el => el.classList.remove("selected"));
+      document.querySelectorAll(".point-card").forEach(el => el.classList.remove("selected"));
+    });
+
+    // Calculate Closest Point (~1% distance = 0.12 km)
+    function calcClosestPoint() {
+      let closest = null;
+      let minDistance = Infinity;
+
+      ecoPoints.forEach(p => {
+        const dx = p.x - userPos.x;
+        const dy = p.y - userPos.y;
+        const distPct = Math.sqrt(dx * dx + dy * dy);
+        if (distPct < minDistance) {
+          minDistance = distPct;
+          closest = p;
+        }
+      });
+
+      if (closest) {
+        const distKm = (minDistance * 0.12).toFixed(2).replace('.', ',');
+        closestName.textContent = closest.name;
+        closestDist.textContent = `${distKm} km`;
+        closestBanner.style.display = "flex";
+
+        selectPoint(closest.id);
+      }
+    }
+
+    // "Minha Localização" Button Click
+    document.getElementById("btnLocation").addEventListener("click", () => {
+      userLocActive = true;
+      userPinMarker.style.display = "block";
+      calcClosestPoint();
+      
+      const mapEl = document.getElementById("mapWrapper");
+      mapEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+
+    // Initial Load Execution
+    document.addEventListener("DOMContentLoaded", () => {
+      renderPins();
+      renderCards();
+      selectPoint(1);
+    });
+  </script>
+<script>
+/* Skip artifact shell — fixed helpers served beside every artifact. */
+(function () {
+  "use strict";
+
+  var fmt = {
+    num: function (v, opts) { return new Intl.NumberFormat("pt-BR", opts || {}).format(v); },
+    brl: function (v) { return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v); },
+    pct: function (v) { return new Intl.NumberFormat("pt-BR", { style: "percent", maximumFractionDigits: 1 }).format(v); }
+  };
+
+  // axisFmt keeps axis tick labels short (compact notation) so long values
+  // (e.g. full BRL amounts) never clip against the plot edge.
+  function axisFmt(v) {
+    return fmt.num(v, { notation: "compact", maximumFractionDigits: 1 });
+  }
+
+  // format accepts a function OR one of the fmt names ("num" | "brl" | "pct").
+  function coerceFormat(spec) {
+    if (typeof spec === "function") return spec;
+    if (typeof spec === "string" && fmt[spec]) return fmt[spec];
+    return function (v) { return fmt.num(v); };
+  }
+
+  function accent() {
+    return getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#2563eb";
+  }
+  function mutedColor() {
+    return getComputedStyle(document.documentElement).getPropertyValue("--text-muted").trim() || "#5b6472";
+  }
+  function svgEl(tag, attrs) {
+    var el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    for (var k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  }
+  function frame(el, w, h) {
+    var svg = svgEl("svg", { viewBox: "0 0 " + w + " " + h, role: "img" });
+    el.innerHTML = "";
+    el.appendChild(svg);
+    return svg;
+  }
+
+  // maxOf guards the axis scale: empty values would give -Infinity (truthy,
+  // so "|| 1" can't catch it) and a non-positive max would flip the chart.
+  function maxOf(values) {
+    var m = values.length ? Math.max.apply(null, values) : 0;
+    return m > 0 ? m : 1;
+  }
+
+  // bar(el, {labels:[], values:[], color?, format?}) — vertical bar chart.
+  function bar(el, cfg) {
+    var W = 640, H = 280, padL = 46, padB = 30, padT = 12;
+    var svg = frame(el, W, H);
+    var max = maxOf(cfg.values);
+    var n = cfg.values.length;
+    var plotW = W - padL - 12, plotH = H - padT - padB;
+    var step = plotW / n, bw = Math.min(step * 0.62, 64);
+    var color = cfg.color || accent();
+    var f = coerceFormat(cfg.format);
+    for (var g = 0; g <= 4; g++) {
+      var gy = padT + plotH - (plotH * g) / 4;
+      svg.appendChild(svgEl("line", { x1: padL, y1: gy, x2: W - 12, y2: gy, stroke: "currentColor", "stroke-opacity": 0.08 }));
+      var lbl = svgEl("text", { x: padL - 8, y: gy + 4, "text-anchor": "end", "font-size": 10, fill: mutedColor() });
+      lbl.textContent = axisFmt((max * g) / 4);
+      svg.appendChild(lbl);
+    }
+    cfg.values.forEach(function (v, i) {
+      var bh = Math.max(0, (v / max) * plotH);
+      var x = padL + i * step + (step - bw) / 2;
+      var y = padT + plotH - bh;
+      var r = svgEl("rect", { x: x, y: y, width: bw, height: bh, rx: 4, fill: color });
+      var t = svgEl("title", {});
+      t.textContent = cfg.labels[i] + ": " + f(v);
+      r.appendChild(t);
+      svg.appendChild(r);
+      var tx = svgEl("text", { x: x + bw / 2, y: H - 10, "text-anchor": "middle", "font-size": 11, fill: mutedColor() });
+      tx.textContent = cfg.labels[i];
+      svg.appendChild(tx);
+    });
+  }
+
+  // line(el, {labels:[], values:[], color?, format?}) — single-series line.
+  function line(el, cfg) {
+    var W = 640, H = 280, padL = 46, padB = 30, padT = 12;
+    var svg = frame(el, W, H);
+    var max = maxOf(cfg.values);
+    var n = cfg.values.length;
+    var plotW = W - padL - 16, plotH = H - padT - padB;
+    var color = cfg.color || accent();
+    var f = coerceFormat(cfg.format);
+    for (var g = 0; g <= 4; g++) {
+      var gy = padT + plotH - (plotH * g) / 4;
+      svg.appendChild(svgEl("line", { x1: padL, y1: gy, x2: W - 16, y2: gy, stroke: "currentColor", "stroke-opacity": 0.08 }));
+      var lbl = svgEl("text", { x: padL - 8, y: gy + 4, "text-anchor": "end", "font-size": 10, fill: mutedColor() });
+      lbl.textContent = axisFmt((max * g) / 4);
+      svg.appendChild(lbl);
+    }
+    var pts = cfg.values.map(function (v, i) {
+      var x = padL + (n === 1 ? plotW / 2 : (plotW * i) / (n - 1));
+      var y = padT + plotH - (v / max) * plotH;
+      return [x, y];
+    });
+    var d = pts.map(function (p, i) { return (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1); }).join(" ");
+    svg.appendChild(svgEl("path", { d: d, fill: "none", stroke: color, "stroke-width": 2, "stroke-linejoin": "round" }));
+    pts.forEach(function (p, i) {
+      var c = svgEl("circle", { cx: p[0], cy: p[1], r: 3.5, fill: color });
+      var t = svgEl("title", {});
+      t.textContent = cfg.labels[i] + ": " + f(cfg.values[i]);
+      c.appendChild(t);
+      svg.appendChild(c);
+      var tx = svgEl("text", { x: p[0], y: H - 10, "text-anchor": "middle", "font-size": 11, fill: mutedColor() });
+      tx.textContent = cfg.labels[i];
+      svg.appendChild(tx);
+    });
+  }
+
+  // donut(el, {labels:[], values:[], colors?}) — donut with center total.
+  function donut(el, cfg) {
+    var W = 320, H = 280, cx = W / 2, cy = H / 2, R = 92, r = 58;
+    var svg = frame(el, W, H);
+    var total = cfg.values.reduce(function (a, b) { return a + b; }, 0) || 1;
+    var palette = cfg.colors || [accent(), "#1baf7a", "#eda100", "#e34948", "#4a3aa7", "#e87ba4"];
+    var a0 = -Math.PI / 2;
+    cfg.values.forEach(function (v, i) {
+      var a1 = a0 + (v / total) * Math.PI * 2;
+      var large = a1 - a0 > Math.PI ? 1 : 0;
+      var p = ["M", cx + R * Math.cos(a0), cy + R * Math.sin(a0),
+        "A", R, R, 0, large, 1, cx + R * Math.cos(a1), cy + R * Math.sin(a1),
+        "L", cx + r * Math.cos(a1), cy + r * Math.sin(a1),
+        "A", r, r, 0, large, 0, cx + r * Math.cos(a0), cy + r * Math.sin(a0), "Z"].join(" ");
+      var path = svgEl("path", { d: p, fill: palette[i % palette.length] });
+      var t = svgEl("title", {});
+      t.textContent = cfg.labels[i] + ": " + fmt.num(v) + " (" + fmt.pct(v / total) + ")";
+      path.appendChild(t);
+      svg.appendChild(path);
+      a0 = a1;
+    });
+    var center = svgEl("text", { x: cx, y: cy + 5, "text-anchor": "middle", "font-size": 20, "font-weight": 650, fill: "currentColor" });
+    center.textContent = fmt.num(total);
+    svg.appendChild(center);
+  }
+
+  window.skipShell = { fmt: fmt };
+  window.skipChart = { bar: bar, line: line, donut: donut };
+})();
+
+</script>
+</body>
+</html>
